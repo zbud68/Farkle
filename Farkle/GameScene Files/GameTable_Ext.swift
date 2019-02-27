@@ -60,7 +60,7 @@ extension GameScene {
         
         currentScoreLabel.name = "CurrentScoreLabel"
         currentScoreLabel.zPosition = gameTable.zPosition + 0.5
-        currentScoreLabel.text = "\(currentPlayer.name) score this roll: \(currentScore)"
+        currentScoreLabel.text = "\(currentPlayer.name) score this roll: \(currentPlayer.currentRollScore)"
         currentScoreLabel.fontName = GameConstants.StringConstants.FontName
         currentScoreLabel.fontColor = GameConstants.Colors.LogoFont
         currentScoreLabel.fontSize = 24

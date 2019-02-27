@@ -128,6 +128,7 @@ extension GameScene {
     //MARK: ********** Roll Dice **********
     
     func rollDice() {
+        playerState = .Idle
         if currentPlayer.firstRoll == true {
             currentPlayer.currentRollScore = 0
             currentScore = 0
@@ -221,25 +222,32 @@ extension GameScene {
     }
     
     func evaluateCurrentRoll(isComplete: (Bool) -> Void) {
+        printScore(label: "evaluate score", currentP: currentPlayer.currentRollScore, currentS: currentScore)
         checkForScoringCombos(isComplete: handlerBlock)
         checkForFarkle(isComplete: handlerBlock)
     }
     
     func checkForScoringCombos(isComplete: (Bool) -> Void) {
+        printScore(label: "check for combo", currentP: currentPlayer.currentRollScore, currentS: currentScore)
         checkForAStraight(isComplete: handlerBlock)
         if straight == true {
             currentScore += 1500
             straight.toggle()
+            currentPlayer.currentRollScore += currentScore
+            currentScore = 0
             startNewRoll()
         } else {
             checkFor3orMoreOfAKind(isComplete: handlerBlock)
+            checkForFullHouse(isComplete: handlerBlock)
         }
-        checkForFullHouse(isComplete: handlerBlock)
         tallyTheScores(isComplete: handlerBlock)
+        //currentScore = 0
         isComplete(true)
     }
     
     func checkForAStraight(isComplete: (Bool) -> Void) {
+        printScore(label: "check for straight", currentP: currentPlayer.currentRollScore, currentS: currentScore)
+
         let currentRollSorted = currentRoll.sorted()
         if currentGame.numDice == 6 {
             if currentRollSorted == sixDieStraight {
@@ -260,19 +268,19 @@ extension GameScene {
             case 1,2:
                 processDie(key: key, value: value, isComplete: handlerBlock)
             case 3:
-                threeOfAKind.toggle()
+                threeOfAKind = true
             case 4:
-                fourOfAKind.toggle()
-                threeOfAKind.toggle()
+                fourOfAKind = true
+                threeOfAKind = false
             case 5:
-                fiveOfAKind.toggle()
-                fourOfAKind.toggle()
-                threeOfAKind.toggle()
+                fiveOfAKind = true
+                fourOfAKind = false
+                threeOfAKind = false
             case 6:
-                sixOfAKind.toggle()
-                fiveOfAKind.toggle()
-                fourOfAKind.toggle()
-                threeOfAKind.toggle()
+                sixOfAKind = true
+                fiveOfAKind = false
+                fourOfAKind = false
+                threeOfAKind = false
             default:
                 break
             }
@@ -302,8 +310,10 @@ extension GameScene {
             }
         case 5:
             if value == 1 {
+                printScore(label: "value=5", currentP: currentPlayer.currentRollScore, currentS: currentScore)
                 currentScore += 50
             } else if value == 2 {
+                printScore(label: "value=1", currentP: currentPlayer.currentRollScore, currentS: currentScore)
                 currentScore += 100
             }
         case 6:
@@ -313,20 +323,22 @@ extension GameScene {
         default:
             break
         }
+        currentPlayer.currentRollScore += currentScore
+        currentScore = 0
         isComplete(true)
     }
     
     func checkForFullHouse(isComplete: (Bool) -> Void) {
         if threeOfAKind == true && pairs == 1 {
             fullHouse = true
-            threeOfAKind.toggle()
+            threeOfAKind = false
         }
         isComplete(true)
     }
     
     func tallyTheScores(isComplete: (Bool) -> Void) {
         let combosArray = [threeOfAKind, fourOfAKind, fiveOfAKind, sixOfAKind, threePairs, fullHouse]
-        for combo in combosArray where combo == true {
+        for combo in combosArray {
             switch combo {
             case threeOfAKind:
                 for (key, value) in dieCount where value == 3 {
@@ -364,38 +376,49 @@ extension GameScene {
                         currentScore += (key * 100) * 4
                     }
                 }
+            case fullHouse:
+                if fullHouse == true {
+                    currentScore += 750
+                }
             default:
                 break
             }
+            currentPlayer.currentRollScore += currentScore
+            currentScore = 0
+            //print("currentScore: \(currentScore)")
         }
         isComplete(true)
     }
     
     func checkForFarkle(isComplete: (Bool) -> Void) {
-        
-        farkleCheck: for (key,value) in dieCount where value > 0 {
-            switch key {
-            case 1:
-                currentPlayer.hasScoringDice = true
-                break farkleCheck
-            case 2:
-                currentPlayer.hasScoringDice = false
-            case 3:
-                currentPlayer.hasScoringDice = false
-            case 4:
-                currentPlayer.hasScoringDice = false
-            case 5:
-                currentPlayer.hasScoringDice = true
-                break farkleCheck
-            case 6:
-                currentPlayer.hasScoringDice = false
-            default:
-                break
+        if playerState != .SelectingDie {
+            farkleCheck: for (key,value) in dieCount where value > 0 {
+                switch key {
+                case 1:
+                    currentPlayer.hasScoringDice = true
+                    break farkleCheck
+                case 2:
+                    currentPlayer.hasScoringDice = false
+                case 3:
+                    currentPlayer.hasScoringDice = false
+                case 4:
+                    currentPlayer.hasScoringDice = false
+                case 5:
+                    currentPlayer.hasScoringDice = true
+                    break farkleCheck
+                case 6:
+                    currentPlayer.hasScoringDice = false
+                default:
+                    break
+                }
             }
-        }
-        if currentPlayer.hasScoringDice == false {
-            scoringCombo = false
-            playerState = .Farkle
+            if currentPlayer.hasScoringDice == false {
+                scoringCombo = false
+                currentScore = 0
+                currentPlayer.currentRollScore = 0
+                resetDice()
+                playerState = .Farkle
+            }
         }
         zeroOutDieCount()
         isComplete(true)
