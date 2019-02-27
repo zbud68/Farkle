@@ -81,4 +81,18 @@ extension GameScene {
             }
         }
     }
+    
+    func resetCurrentPlayer() {
+        dieCount.removeAll(keepingCapacity: true)
+        currentPlayer.currentRollScore = 0
+        currentPlayer.firstRoll = true
+        currentPlayer.hasScoringDice = false
+        currentScore = 0
+        for die in currentDiceArray {
+            die.selected = false
+            die.selectable = true
+            die.rollable = true
+            die.scoring = false
+        }
+    }
 }

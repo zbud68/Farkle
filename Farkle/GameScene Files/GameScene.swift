@@ -188,8 +188,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var numnOfSixes: Int = Int(0)
     var pairs: Int = Int(0)
     
-    var pointsAvailable: Int = Int(0)
-    
+    // Key is die.faceValue, value is the qty of them
+    var dieCount: [Int:Int] = [1:0,2:0,3:0,4:0,5:0,6:0]
+    var dieRemaining  = 0
+
     // MARK: ********** didMove Section **********
     
     override func didMove(to view: SKView) {
@@ -294,30 +296,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func wasDiceTouched() {
         for die in currentDiceArray where die.rollable == true {
-            currentDie = die
             if die.contains(gameTableTouchLocation) {
-                let dieTextureSelected = selectedTextures[die.faceValue - 1]
-                die.texture = dieTextureSelected
-                die.selectable = false
-                die.selected = true
-                die.physicsBody?.isDynamic = false
-                die.rollable = false
-            } else {
-                let dieTexture = unSelectedTextures[die.faceValue - 1]
-                die.texture = dieTexture
-                die.selectable = true
-                die.selected = false
-                die.physicsBody?.isDynamic = true
-                die.rollable = true
+                if die.selected == false {
+                    let dieTexture = unSelectedTextures[die.faceValue - 1]
+                    die.texture = dieTexture
+                    die.selectable = true
+                    die.selected = false
+                    die.physicsBody?.isDynamic = true
+                    die.rollable = true
+                    remainingDice += 1
+                } else {
+                    let dieTextureSelected = selectedTextures[die.faceValue - 1]
+                    die.texture = dieTextureSelected
+                    die.selectable = false
+                    die.selected = true
+                    die.physicsBody?.isDynamic = false
+                    die.rollable = false
+                    remainingDice -= 1
+                }
             }
-            evaluateCurrentRoll()
+            if remainingDice == 0 {
+                playerState = .NewRoll
+            }
         }
-        var count = 0
-        for die in currentDiceArray where die.rollable == true {
-            count += 1
-        }
-        if count == 0 {
-            playerState = .Farkle
+        if currentPlayer.firstRoll != true {
+            evaluateCurrentRoll(isComplete: handlerBlock)
+            currentScoreLabel.text = String(currentScore)
         }
     }
 
@@ -340,7 +344,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         getCurrentGameSettings()
         setupPlayers()
         setupDice()
-        setupDieFaces()
         currentPlayer = playersArray.first
         currentPlayerID = 0
         currentPlayer.nameLabel.fontColor = GameConstants.Colors.PlayerNameLabelFont
@@ -349,6 +352,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func getCurrentGameSettings() {
         currentGame = Game()
+        remainingDice = currentGame.numDice
+
     }
     
     func resumeIconTouched() {
@@ -409,6 +414,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         currentPlayer.score += currentPlayer.currentRollScore
         currentPlayer.scoreLabel.text = String(currentPlayer.score)
         currentPlayer.currentRollScore = 0
+        currentScore = 0
         nextPlayer()
     }
     
@@ -424,12 +430,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             gameState = .NewRound
         }
         
+        print("nextPlayer executed first")
         currentPlayer = playersArray[currentPlayerID]
         currentPlayer.nameLabel.fontColor = GameConstants.Colors.PlayerNameLabelFont
         currentPlayer.scoreLabel.fontColor = GameConstants.Colors.PlayerScoreLabelFont
         currentPlayer.firstRoll = true
         resetDice()
         repositionDice()
+        currentPlayer.currentRollScore = 0
         currentScore = 0
         for die in currentDiceArray {
             die.physicsBody?.isDynamic = true
@@ -437,23 +445,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func startNewRoll() {
-        currentPlayer.currentRollScore = 0
+        currentScore = 0
+        zeroOutDieCount()
         currentDiceArray = diceArray
         currentPlayer.firstRoll = true
+        currentPlayer.hasScoringDice = false
 
         for die in currentDiceArray {
             die.countThisRoll = 0
             die.ID = 0
+            die.selectable = true
+            die.selected = false
             die.rollable = true
-            scoringCombo = false
-        }
-        repositionDice()
-        for die in currentDiceArray {
+            die.scoring = false
             die.physicsBody?.isDynamic = true
+
         }
+        scoringCombo = false
+        repositionDice()
     }
     
     func startNewRound() {
+        currentScore = 0
+        print("newround executed first")
         print("start new round")
         currentPlayer.nameLabel.fontColor = UIColor.lightGray
         currentPlayer.scoreLabel.fontColor = UIColor.lightGray
@@ -517,7 +531,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func farkle() {
+        currentScore = 0
+        currentPlayer.currentRollScore = 0
         showMessage(msg: "Farkle")
+        resetCurrentPlayer()
         nextPlayer()
     }
     
@@ -568,6 +585,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: ********** Updates Section **********
     
     override func update(_ currentTime: TimeInterval) {
+        currentScoreLabel.text = "\(currentPlayer.name) score: \(currentScore)"
 
     }
 }

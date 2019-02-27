@@ -48,6 +48,7 @@
 		4D9394EC2216A99D00E12EFC /* Player_Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player_Ext.swift; sourceTree = "<group>"; };
 		4DA3FF61220A9EFB008B7BC4 /* GameConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameConstants.swift; sourceTree = "<group>"; };
 		4DA971762215E2E500CEB115 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		4DD60E45222631C600F535F9 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		4DE4A22D2211D74300671D07 /* BackGround_Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackGround_Ext.swift; sourceTree = "<group>"; };
 		4DE4A2302211D82800671D07 /* GameTable_Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTable_Ext.swift; sourceTree = "<group>"; };
 		4DE4A2332211D87100671D07 /* Window_Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Window_Ext.swift; sourceTree = "<group>"; };
@@ -97,6 +98,7 @@
 		4D63969D220165CB004B6718 /* Farkle */ = {
 			isa = PBXGroup;
 			children = (
+				4DD60E45222631C600F535F9 /* MyPlayground.playground */,
 				4D6396AB220165CE004B6718 /* Assets.xcassets */,
 				4DE4A22F2211D7CE00671D07 /* GameScene Files */,
 				4DE4A23B22123C8B00671D07 /* SKS Files */,
