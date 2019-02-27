@@ -13,10 +13,21 @@ extension GameScene {
     func setupPlayers() {
         
         player1.nameLabel.text = "Player 1"
-        player2.nameLabel.text = "Player 2"
-        player3.nameLabel.text = "Player 3"
-        player4.nameLabel.text = "Player 4"
+        player1.nameLabel.fontColor = GameConstants.Colors.PlayerNameLabelFont
+        player1.scoreLabel.fontColor = GameConstants.Colors.PlayerScoreLabelFont
         
+        player2.nameLabel.text = "Player 2"
+        player2.nameLabel.fontColor = UIColor.lightGray
+        player2.scoreLabel.fontColor = UIColor.lightGray
+
+        player3.nameLabel.text = "Player 3"
+        player3.nameLabel.fontColor = UIColor.lightGray
+        player3.scoreLabel.fontColor = UIColor.lightGray
+
+        player4.nameLabel.text = "Player 4"
+        player4.nameLabel.fontColor = UIColor.lightGray
+        player4.scoreLabel.fontColor = UIColor.lightGray
+
         switch currentGame.numPlayers {
         case 1:
             playersArray = [player1]
@@ -45,8 +56,6 @@ extension GameScene {
             player.scoreLabel.fontName = GameConstants.StringConstants.FontName
             player.nameLabel.fontSize = GameConstants.Sizes.PlayerNameLabelFont
             player.scoreLabel.fontSize = GameConstants.Sizes.PlayerScoreLabelFont
-            player.nameLabel.fontColor = GameConstants.Colors.PlayerNameLabelFont
-            player.scoreLabel.fontColor = GameConstants.Colors.PlayerScoreLabelFont
             player.nameLabel.zPosition = GameConstants.ZPositions.NameLabel
             player.scoreLabel.zPosition = GameConstants.ZPositions.ScoreLabel
             
