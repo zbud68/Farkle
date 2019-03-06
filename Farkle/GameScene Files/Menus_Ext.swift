@@ -10,7 +10,6 @@ import SpriteKit
 extension GameScene {
     
     func setupMainMenuIcons() {
-        
         newGameIcon.texture = SKTexture(imageNamed: "GreenPlay")
         newGameIcon.name = "New Game"
         newGameIcon.size = CGSize(width: 32, height: 32)
@@ -84,7 +83,6 @@ extension GameScene {
     }
     
     func setupSettingsMenuIcons() {
-        
         soundIcon.texture = SKTexture(imageNamed: "GreenSound")
         soundIcon.name = "Sound"
         soundIcon.size = CGSize(width: 32, height: 32)

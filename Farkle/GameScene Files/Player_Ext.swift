@@ -59,7 +59,6 @@ extension GameScene {
             player.nameLabel.zPosition = GameConstants.ZPositions.NameLabel
             player.scoreLabel.zPosition = GameConstants.ZPositions.ScoreLabel
             
-            
             switch player.name {
             case "Player 1":
                 player1.nameLabel.position = CGPoint(x: 0, y: (scoresWindow.frame.height / 4) + 15)
@@ -83,16 +82,11 @@ extension GameScene {
     }
     
     func resetCurrentPlayer() {
-        dieCount.removeAll(keepingCapacity: true)
         currentPlayer.currentRollScore = 0
-        currentPlayer.firstRoll = true
         currentPlayer.hasScoringDice = false
         currentScore = 0
         for die in currentDiceArray {
             die.selected = false
-            die.selectable = true
-            die.rollable = true
-            die.scoring = false
         }
     }
 }

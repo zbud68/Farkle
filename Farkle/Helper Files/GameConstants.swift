@@ -24,6 +24,8 @@ struct GameConstants {
         static let Die5Name = "Die5"
         static let Die6Name = "Die6"
         
+        static let DiePrefix = "die"
+        
         static let BackGroundName = "BackGround"
         static let GameTableName = "GameTable"
         static let IconWindowName = "IconWindow"
