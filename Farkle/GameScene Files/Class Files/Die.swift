@@ -9,20 +9,13 @@
 import SpriteKit
 
 class Die: SKSpriteNode {
-    enum DieState {
-        case Selected, Unselected
-    }
     
-    let dieName: String = "die"  // Name used to set Texture
-    var faceValue: Int = Int(0)
-    var points: Int = Int()      // Point Value used for calculating scores
-    var scoring: Bool = Bool(false)
-    var countThisRoll: Int = Int(0)
-    var rollable: Bool = Bool(true)
-    var ID: Int = Int(0)
-    var SelectedDieTexture: SKTexture = SKTexture()
-    var UnSelectedDieTexture: SKTexture = SKTexture()
     var selected: Bool = false
-    var selectable: Bool = false
-    
+    var selectedDieTexture: SKTexture = SKTexture()
+    var unSelectedDieTexture: SKTexture = SKTexture()
+    var currentDieTexture: SKTexture = SKTexture()
+    var faceValue: Int = Int()
+    //var pointValue: Int = Int()
+    var count: Int = Int()
+
 }
