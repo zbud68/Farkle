@@ -8,7 +8,7 @@
 import SpriteKit
 
 extension GameScene {
-    func setupBackGround() {
+    func setupBackGround(isComplete: (Bool) -> Void) {
         backGround = SKSpriteNode(texture: SKTexture(imageNamed: GameConstants.StringConstants.BackGroundImageName))
         backGround.size = CGSize(width: frame.size.width, height: frame.size.height)
         backGround.zPosition = GameConstants.ZPositions.BackGround
@@ -16,5 +16,6 @@ extension GameScene {
         backGround.position = CGPoint(x: 0, y: 0)
 
         addChild(backGround)
+        isComplete(true)
     }
 }

@@ -23,138 +23,38 @@ extension GameScene {
         scoringCombo.sixOAK = false
     }
     
-    func getDiceRoll() {
-        resetVariable()
+    func rollDice() {
+        let currentDiceRoll = currentDiceArray
         
-        var currentDie = 0
         var id = 0
-        for _ in 1...currentGame.numDice {
-            currentDie = Int(arc4random_uniform(6)+1)
-            currentRoll.append((currentDie, currentDie, 0))
-            id += 1
-        }
-        id = 0
-        for _ in 1...currentGame.numDice {
-            let currentDie = currentRoll[id].0
-            if currentDie == 1 {
-                currentRoll[id].1 = currentDie * 10
-            } else {
-                currentRoll[id].1 = currentDie
-            }
-            currentRoll[id].2 = 0
-            id += 1
-        }
-        id = 0
-        var dieFaces: [Int] = []
-        for (face, _, _) in currentRoll {
-            dieFaces.append(face)
-            id += 1
-        }
-        print(dieFaces)
-        matchDieFaceToDieImage()
-        getCount()
-    }
-    
-    func matchDieFaceToDieImage() {
-        var currentRollFace: [(Int, Int)] = []
-        var id = 0
-        for (face, _, count) in currentRoll {
-            let faceValue = face
-            let dieCount = count
-            currentRollFace.append((faceValue, dieCount))
-            id += 1
-        }
-        
-        var currentDieFace: [Int] = []
-        id = 0
-        for die in currentDiceArray {
-            let faceValue = die.faceValue
-            currentDieFace.append(faceValue)
-            id += 1
-        }
-        
-        var faceID = 0
-        var faceValue = 0
-        var dieCount = 0
-        for (face, count) in currentRollFace {
-            var dieFaceID = 0
-            for dieFace in currentDieFace {
-                if face == dieFace {
-                    faceValue = currentRollFace[faceID].0
-                    dieCount = currentRollFace[faceID].1
-                }
-                dieFaceID += 1
-            }
-            faceID += 1
-        }
-    }
-    
-    func getCount() {
-        var id = 0
-        for (face, _, _) in currentRoll {
-            let faceValue = face
-
-            switch faceValue {
+        for die in currentDiceRoll {
+            die.faceValue = Int(arc4random_uniform(6)+1)
+            print("faceValue: \(die.faceValue)\n")
+            switch die.faceValue {
             case 1:
-                var die = 0
-                for (face, _, _) in currentRoll {
-                    if face == faceValue {
-                        currentRoll[die].2 += 1
-                        break
-                    }
-                    die += 1
-                }
-                break
+                die.texture = GameConstants.Textures.Die1
+                dieFace1.countThisRoll += 1
+                print("dieFace1 count: \(dieFace1.countThisRoll)\n")
             case 2:
-                var die = 0
-                for (face, _, _) in currentRoll {
-                    if face == faceValue {
-                        currentRoll[die].2 += 1
-                        break
-                    }
-                    die += 1
-                }
-                break
+                die.texture = GameConstants.Textures.Die2
+                dieFace2.countThisRoll += 1
+                print("dieFace2 count: \(dieFace2.countThisRoll)\n")
             case 3:
-                var die = 0
-                for (face, _, _) in currentRoll {
-                    if face == faceValue {
-                        currentRoll[die].2 += 1
-                        break
-                    }
-                    die += 1
-                }
-                break
+                die.texture = GameConstants.Textures.Die3
+                dieFace3.countThisRoll += 1
+                print("dieFace3 count: \(dieFace3.countThisRoll)\n")
             case 4:
-                var die = 0
-                for (face, _, _) in currentRoll {
-                    if face == faceValue {
-                        currentRoll[die].2 += 1
-                        break
-                    }
-                    die += 1
-                }
-                break
+                die.texture = GameConstants.Textures.Die4
+                dieFace4.countThisRoll += 1
+                print("dieFace4 count: \(dieFace4.countThisRoll)\n")
             case 5:
-                var die = 0
-                for (face, _, _) in currentRoll {
-                    if face == faceValue {
-                        currentRoll[die].2 += 1
-                        break
-                    }
-                    die += 1
-                }
-                break
+                die.texture = GameConstants.Textures.Die5
+                dieFace5.countThisRoll += 1
+                print("dieFace5 count: \(dieFace5.countThisRoll)\n")
             case 6:
-                var die = 0
-                for (face, _, _) in currentRoll {
-                    if face == faceValue {
-                        currentRoll[die].2 += 1
-                        break
-                    }
-                    die += 1
-                }
-                break
+                die.texture = GameConstants.Textures.Die6
+                dieFace6.countThisRoll += 1
+                print("dieFace6 count: \(dieFace6.countThisRoll)\n")
             default:
                 break
             }
@@ -166,39 +66,36 @@ extension GameScene {
     func tallyTheScore() {
         checkForAStraight(isComplete: handlerBlock)
         checkForThreeOfAKind(isComplete: handlerBlock)
+        printFindings()
     }
 
     func checkForAStraight(isComplete: (Bool) -> Void) {
- 
-        var faceValues: [Int] = [Int]()
-         for (face, _, _) in currentRoll {
-            faceValues.append(face)
-            faceValues = faceValues.sorted()
+        var dieFaces: [Int] = []
+        for die in currentDiceArray {
+            dieFaces.append(die.faceValue)
         }
-        if faceValues == scoringCombo.sixDieStraight {
+        dieFaces = dieFaces.sorted()
+        
+        if dieFaces == scoringCombo.sixDieStraight {
             scoringCombo.straight = true
-        } else if faceValues == scoringCombo.lowStraight || faceValues == scoringCombo.highStraight {
+        } else if dieFaces == scoringCombo.lowStraight || dieFaces == scoringCombo.highStraight {
             scoringCombo.straight = true
         }
         isComplete(true)
     }
 
     func checkForThreeOfAKind(isComplete: (Bool) -> Void) {
+        var faceValue = 0
+        var dieCount = 0
         var id = 0
-        for (face, _, count) in currentRoll {
-            let currentDie = currentRoll[id].1
-            let faceValue = face
-            //let pointValue = point
-            let dieCount = count
-            
-            print("dieCount: \(dieCount)")
+        for dieFace in dieFacesArray {
+            dieCount = dieFace.countThisRoll
+            faceValue = dieFace.faceValue
             
             switch dieCount {
             case 1:
                 if faceValue == 1 || faceValue == 5 {
                     scoringCombo.scoringDice = true
-                    
-                    print("face value: \(faceValue)")
                 }
                 break
             case 2:
@@ -227,39 +124,63 @@ extension GameScene {
             default:
                 break
             }
-            if scoringCombo.threeOAK == true && scoringCombo.pairs == 1 {
-                scoringCombo.fullHouse = true
-                scoringCombo.threeOAK = false
-                scoringCombo.scoringDice = true
+            if currentGame.numDice == 5 {
+                if scoringCombo.threeOAK == true && scoringCombo.pairs == 1 {
+                    scoringCombo.fullHouse = true
+                    scoringCombo.threeOAK = false
+                    scoringCombo.scoringDice = true
+                }
             }
+            
             if scoringCombo.pairs == 3 {
                 scoringCombo.threePair = true
                 scoringCombo.scoringDice = true
             }
             id += 1
         }
+        
         if scoringCombo.scoringDice == false {
             print("farkle")
             farkle()
         }
+        
         getSelectedDiceScore()
         printFindings()
+        isComplete(true)
     }
     
     func getSelectedDiceScore() {
+        
+        
+        
+        /*
+        var faceValue = 0
+        var count = 0
+
+        for dieFace in dieFacesArray {
+            faceValue = dieFace.faceValue
+            count = dieFace.countThisRoll
+        }
+
         var faceID = 0
         var dieID = 0
-        for (face, _, _) in currentRoll {
-            let faceValue = face
+        for dieFace in dieFacesArray {
+            faceValue = dieFace.faceValue
+            
+            var countThisRoll = count
             for die in currentDiceArray {
-                let dieValue = die.faceValue
+                var dieValue = die.faceValue
                 if faceValue == dieValue && die.selected == true {
                     selectedDiceArray.append(currentDiceArray[dieID])
+                    selectedDiceArray[dieID].faceValue = faceValue
+                    selectedDiceArray[dieID].countThisRoll = countThisRoll
                 }
                 dieID += 1
             }
             faceID += 1
         }
+        */
+        whatchaGot(isComplete: handlerBlock)
     }
     
     func printFindings() {
@@ -295,6 +216,83 @@ extension GameScene {
     
     
     func whatchaGot(isComplete: (Bool) -> Void) {
+        for die in selectedDiceArray {
+            print("entered first for statement")
+            let face = die.faceValue
+            print("selected dice: \(face)")
+        }
+        for die in selectedDiceArray {
+            print("entered second for statement")
+            let faceValue = die.faceValue
+            let pointValue = die.faceValue
+            //let texture = die.texture
+    
+            var rollScore = currentPlayer.currentRollScore
+            print("entering switch")
+            var count = 0
+
+            for dieFace in dieFacesArray {
+                count = dieFace.countThisRoll
+            }
+            
+            switch count {
+            case 1:
+                if faceValue == 1 || faceValue == 5 {
+                    rollScore += pointValue * 10
+                    print("rollScore: \(rollScore)")
+                }
+            case 2:
+                if faceValue == 1 || faceValue == 5 {
+                    rollScore += pointValue * 10
+                    print("rollScore: \(rollScore)")
+                }
+            case 3:
+                if scoringCombo.threeOAK == true {
+                    rollScore += (pointValue * 100)
+                    print("rollScore: \(rollScore)")
+                }
+            case 4:
+                if scoringCombo.fourOAK == true {
+                    rollScore += (pointValue * 100) * 2
+                    print("rollScore: \(rollScore)")
+                }
+            case 5:
+                if scoringCombo.fiveOAK == true {
+                    rollScore += (pointValue * 100) * 3
+                    print("rollScore: \(rollScore)")
+                }
+            case 6:
+                if scoringCombo.sixOAK == true {
+                    rollScore += (pointValue * 100) * 4
+                    print("rollScore: \(rollScore)")
+                }
+            default:
+                break
+            }
+            if scoringCombo.straight == true {
+                rollScore += 1500
+                print("rollScore: \(rollScore)")
+                //startNewRoll()
+            } else if scoringCombo.fullHouse == true {
+                if currentGame.numDice == 5 {
+                    rollScore += 750
+                    print("rollScore: \(rollScore)")
+                    //startNewRoll()
+                }
+            }
+            if currentGame.numDice == 6 && scoringCombo.threePair == true {
+                rollScore += 500
+                print("rollScore: \(rollScore)")
+                startNewRoll()
+            }
+            print("rollScore: \(rollScore)")
+            currentScore += rollScore
+            currentScoreLabel.text = String(currentScore)
+        }
+        print("current Score: \(currentScore)")
+        isComplete(true)
+    }
+}
         
         /*
         for (combo, value) in ScoringCombo {
@@ -331,8 +329,7 @@ extension GameScene {
             }
         }
         isComplete(true)
-    */}
-}
+    */
 
 class ScoringCombo {
     let lowStraight = [1,2,3,4,5]

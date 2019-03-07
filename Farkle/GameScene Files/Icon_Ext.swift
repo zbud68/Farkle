@@ -8,8 +8,7 @@
 import SpriteKit
 
 extension GameScene {
-    func setupIconWindowIcons() {
-        
+    func setupIconWindowIcons(isComplete: (Bool) -> Void) {
         pauseIcon.texture = SKTexture(imageNamed: "GreenPause")
         pauseIcon.name = "Pause"
         pauseIcon.size = CGSize(width: 32, height: 32)
@@ -29,24 +28,29 @@ extension GameScene {
         keepScoreIcon.size = CGSize(width: 60, height: 40)
         keepScoreIcon.zPosition = GameConstants.ZPositions.Dice
         
-        setupIconWindowIconsArray()
+        setupIconWindowIconsArray(isComplete: handlerBlock)
+        isComplete(true)
     }
 
-    func setupMainMenuIconsArray() {
+    func setupMainMenuIconsArray(isComplete: (Bool) -> Void) {
         mainMenuIconsArray = [newGameIcon, resumeIcon, settingsIcon, exitIcon, infoIcon]
+        isComplete(true)
     }
     
-    func setupSettingsMenuIconsArray() {
+    func setupSettingsMenuIconsArray(isComplete: (Bool) -> Void) {
         settingsMenuIconsArray = [soundIcon, backIcon]
+        isComplete(true)
     }
     
-    func setupIconWindowIconsArray() {        
+    func setupIconWindowIconsArray(isComplete: (Bool) -> Void) {
         iconWindowIconsArray = [pauseIcon, rollDiceIcon, keepScoreIcon]
+        isComplete(true)
     }
     
-    func addIconWindowIcons() {
+    func addIconWindowIcons(isComplete: (Bool) -> Void) {
         iconWindow.addChild(pauseIcon)
         iconWindow.addChild(rollDiceIcon)
         iconWindow.addChild(keepScoreIcon)
+        isComplete(true)
     }
 }

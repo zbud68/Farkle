@@ -81,6 +81,16 @@ extension GameScene {
         }
     }
     
+    func getCurrentPlayer() {
+        if currentPlayerID < playersArray.count - 1 {
+            currentPlayerID += 1
+            currentPlayer = playersArray[currentPlayerID]
+        } else {
+            currentPlayerID = 0
+            gameState = .NewRound
+        }
+    }
+    
     func resetCurrentPlayer() {
         currentPlayer.currentRollScore = 0
         currentPlayer.hasScoringDice = false

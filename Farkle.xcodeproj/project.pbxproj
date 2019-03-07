@@ -17,7 +17,7 @@
 		4D6396A5220165CB004B6718 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6396A4220165CB004B6718 /* GameScene.swift */; };
 		4D6396A7220165CB004B6718 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6396A6220165CB004B6718 /* GameViewController.swift */; };
 		4D6396AC220165CE004B6718 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D6396AB220165CE004B6718 /* Assets.xcassets */; };
-		4D655749222B9E5E00565237 /* DieRolling_Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D655748222B9E5E00565237 /* DieRolling_Ext.swift */; };
+		4D655749222B9E5E00565237 /* DieRollingAnimation_Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D655748222B9E5E00565237 /* DieRollingAnimation_Ext.swift */; };
 		4D7BD9E322110B02005D6D78 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4D7BD9E222110B02005D6D78 /* GameScene.sks */; };
 		4D9394ED2216A99D00E12EFC /* Player_Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9394EC2216A99D00E12EFC /* Player_Ext.swift */; };
 		4DA3FF62220A9EFB008B7BC4 /* GameConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA3FF61220A9EFB008B7BC4 /* GameConstants.swift */; };
@@ -45,7 +45,7 @@
 		4D6396A6220165CB004B6718 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		4D6396AB220165CE004B6718 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4D6396B0220165CE004B6718 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4D655748222B9E5E00565237 /* DieRolling_Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DieRolling_Ext.swift; sourceTree = "<group>"; };
+		4D655748222B9E5E00565237 /* DieRollingAnimation_Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DieRollingAnimation_Ext.swift; sourceTree = "<group>"; };
 		4D7BD9E222110B02005D6D78 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		4D9394EC2216A99D00E12EFC /* Player_Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player_Ext.swift; sourceTree = "<group>"; };
 		4DA3FF61220A9EFB008B7BC4 /* GameConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameConstants.swift; sourceTree = "<group>"; };
@@ -108,8 +108,8 @@
 				4DE4A23D22123CE000671D07 /* Story Boards */,
 				4DE4A23C22123CB500671D07 /* Support Files */,
 				4D6396B0220165CE004B6718 /* Info.plist */,
-				4DCCF9D7222E6469000AFA19 /* Playground.playground */,
 				4D433FFF222F493200DB22FB /* TestingGrounds.playground */,
+				4DCCF9D7222E6469000AFA19 /* Playground.playground */,
 			);
 			path = Farkle;
 			sourceTree = "<group>";
@@ -127,7 +127,7 @@
 				4DE4A2372211D96D00671D07 /* Dice_Ext.swift */,
 				4D374D1E221E104A00834241 /* Menus_Ext.swift */,
 				4DBF23AB2229F7BC0093ED82 /* Scoring_Ext.swift */,
-				4D655748222B9E5E00565237 /* DieRolling_Ext.swift */,
+				4D655748222B9E5E00565237 /* DieRollingAnimation_Ext.swift */,
 			);
 			path = "GameScene Files";
 			sourceTree = "<group>";
@@ -249,7 +249,7 @@
 				4DE4A2342211D87100671D07 /* Window_Ext.swift in Sources */,
 				4DE4A2382211D96D00671D07 /* Dice_Ext.swift in Sources */,
 				4DA3FF62220A9EFB008B7BC4 /* GameConstants.swift in Sources */,
-				4D655749222B9E5E00565237 /* DieRolling_Ext.swift in Sources */,
+				4D655749222B9E5E00565237 /* DieRollingAnimation_Ext.swift in Sources */,
 				4DFDFC6C222063D000439E67 /* Die.swift in Sources */,
 				4DE4A2312211D82800671D07 /* GameTable_Ext.swift in Sources */,
 				4DA971772215E2E500CEB115 /* Game.swift in Sources */,

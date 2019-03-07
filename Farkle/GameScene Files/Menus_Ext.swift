@@ -40,12 +40,12 @@ extension GameScene {
         infoIcon.position = CGPoint(x: mainMenu.frame.maxX - 50, y: mainMenu.frame.minY + 35)
         infoIcon.zPosition = GameConstants.ZPositions.Icon
         
-        setupMainMenuLabels()
-        setupMainMenuIconsArray()
-        addMainMenu()
+        setupMainMenuLabels(isComplete: handlerBlock)
+        setupMainMenuIconsArray(isComplete: handlerBlock)
+        addMainMenu(isComplete: handlerBlock)
     }
     
-    func setupMainMenuLabels() {
+    func setupMainMenuLabels(isComplete: (Bool) -> Void) {
         mainMenuLabel.text = "Main Menu"
         mainMenuLabel.fontName = GameConstants.StringConstants.FontName
         mainMenuLabel.fontSize = GameConstants.Sizes.MainMenuFont
@@ -80,9 +80,10 @@ extension GameScene {
         exitIconLabel.fontColor = GameConstants.Colors.IconLabelFont
         exitIconLabel.zPosition = GameConstants.ZPositions.IconLabel
         exitIconLabel.position = CGPoint(x: 67, y: -8)
+        isComplete(true)
     }
     
-    func setupSettingsMenuIcons() {
+    func setupSettingsMenuIcons(isComplete: (Bool) -> Void) {
         soundIcon.texture = SKTexture(imageNamed: "GreenSound")
         soundIcon.name = "Sound"
         soundIcon.size = CGSize(width: 32, height: 32)
@@ -95,11 +96,12 @@ extension GameScene {
         backIcon.zPosition = GameConstants.ZPositions.Icon
         backIcon.position = CGPoint(x: -50, y: settingsMenu.frame.midY)
         
-        setupSettingsMenuLabels()
-        setupSettingsMenuIconsArray()
+        setupSettingsMenuLabels(isComplete: handlerBlock)
+        setupSettingsMenuIconsArray(isComplete: handlerBlock)
+        isComplete(true)
     }
     
-    func setupSettingsMenuLabels() {
+    func setupSettingsMenuLabels(isComplete: (Bool) -> Void) {
         settingsMenuLabel.text = "Settings Menu"
         settingsMenuLabel.fontName = GameConstants.StringConstants.FontName
         settingsMenuLabel.fontSize = GameConstants.Sizes.MainMenuFont
@@ -119,9 +121,10 @@ extension GameScene {
         backIconLabel.fontColor = GameConstants.Colors.IconLabelFont
         backIconLabel.zPosition = GameConstants.ZPositions.IconLabel
         backIconLabel.position = CGPoint(x: 59, y: -8)
+        isComplete(true)
     }
     
-    func addMainMenu() {
+    func addMainMenu(isComplete: (Bool) -> Void) {
         
         self.addChild(mainMenu)
         mainMenu.addChild(newGameIcon)
@@ -134,14 +137,16 @@ extension GameScene {
         resumeIcon.addChild(resumeIconLabel)
         settingsIcon.addChild(settingsIconLabel)
         exitIcon.addChild(exitIconLabel)
+        isComplete(true)
     }
     
-    func addSettingsMenu() {
+    func addSettingsMenu(isComplete: (Bool) -> Void) {
         self.addChild(settingsMenu)
         settingsMenu.addChild(settingsMenuLabel)
         settingsMenu.addChild(soundIcon)
         soundIcon.addChild(soundIconLabel)
         settingsMenu.addChild(backIcon)
         backIcon.addChild(backIconLabel)
+        isComplete(true)
     }
 }

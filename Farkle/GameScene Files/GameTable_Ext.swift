@@ -9,7 +9,7 @@ import SpriteKit
 
 extension GameScene {
         
-    func setupGameTable() {
+    func setupGameTable(isComplete: (Bool) -> Void) {
         
         gameTable = SKSpriteNode(imageNamed: "WindowPopup")
         gameTable.name = "Game Table"
@@ -26,11 +26,12 @@ extension GameScene {
         gameTable.physicsBody?.collisionBitMask = 1
         gameTable.physicsBody?.contactTestBitMask = 1
 
-        setupLogo()
-        setupCurrentScoreLabel()
+        setupLogo(isComplete: handlerBlock)
+        setupCurrentScoreLabel(isComplete: handlerBlock)
+        isComplete(true)
     }
     
-    func setupLogo() {
+    func setupLogo(isComplete: (Bool) -> Void) {
         
         logo.fontName = GameConstants.StringConstants.FontName
         logo.fontColor = GameConstants.Colors.LogoFont
@@ -47,9 +48,10 @@ extension GameScene {
         
         logo2.zPosition = GameConstants.ZPositions.Logo
         logo2.position = CGPoint(x: -185, y: -25)
+        isComplete(true)
     }
     
-    func setupCurrentScoreLabel() {
+    func setupCurrentScoreLabel(isComplete: (Bool) -> Void) {
         
         currentScoreLabel.name = "CurrentScoreLabel"
         currentScoreLabel.zPosition = gameTable.zPosition + 0.5
@@ -59,6 +61,7 @@ extension GameScene {
         currentScoreLabel.fontSize = 24
         currentScoreLabel.alpha = 1
         currentScoreLabel.position = CGPoint(x: 0, y: gameTable.frame.maxY - (gameTable.size.height / 4))
+        isComplete(true)
     }
     
     

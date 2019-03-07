@@ -8,7 +8,7 @@
 import SpriteKit
 
 extension GameScene {
-    func setupIconWindow() {
+    func setupIconWindow(isComplete: (Bool) -> Void) {
         iconWindow = SKSpriteNode(texture: SKTexture(imageNamed: "WindowPopup1"))
         iconWindow.size = CGSize(width: 165, height: (backGround.size.height / 4))
         iconWindow.position = CGPoint(x: ((backGround.frame.minX) + (iconWindow.size.width / 2)) + 5, y: ((backGround.frame.maxY) - (iconWindow.size.height / 2)) - 10)
@@ -16,10 +16,11 @@ extension GameScene {
         iconWindow.name = "Icon Window"
 
         backGround.addChild(iconWindow)
-        setupIconWindowIcons()
+        setupIconWindowIcons(isComplete: handlerBlock)
+        isComplete(true)
     }
 
-    func setupScoresWindow() {
+    func setupScoresWindow(isComplete: (Bool) -> Void) {
         scoresWindow = SKSpriteNode(texture: SKTexture(imageNamed: "WindowPopup2"))
         scoresWindow.size = CGSize(width: 165, height: (backGround.size.height / 4) * 3)
         scoresWindow.position = CGPoint(x: iconWindow.position.x, y: (iconWindow.position.y - (iconWindow.size.height * 2) + 10))
@@ -27,5 +28,6 @@ extension GameScene {
         scoresWindow.name = "Player Scores Window"
 
         backGround.addChild(scoresWindow)
+        isComplete(true)
     }
 }

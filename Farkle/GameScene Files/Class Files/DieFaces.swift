@@ -9,18 +9,6 @@
 import SpriteKit
 
 class DieFaces {
-    var faceName: String
-    var faceValue: Int
-    var pointValue: Int
-    var countThisRoll: Int
-    var scoringDie: Bool
-    
-    init(name: String, faceValue: Int, pointValue: Int, countThisRoll: Int, scoringDie: Bool)
-    {
-        self.faceName = name
-        self.faceValue = faceValue
-        self.pointValue = pointValue
-        self.countThisRoll = countThisRoll
-        self.scoringDie = false
-    }
+    var faceValue: Int = 0
+    var countThisRoll: Int = 0
 }

@@ -12,16 +12,23 @@ extension GameScene {
     
     //MARK: ********** Roll Dice **********
  
+    /*
     func rollDice(isComplete: (Bool) -> Void) {
+        //getCurrentPlayer()
         removeSelectedDice(isComplete: handlerBlock)
-        getDiceRoll()
+        whatchaGot(isComplete: handlerBlock)
+        //getDiceRoll()
         var randomX = CGFloat()
         var randomY = CGFloat()
         
-        randomX = CGFloat(arc4random_uniform(5) + 5)
-        randomY = CGFloat(arc4random_uniform(2) + 3)
+        let getRandomPoints = SKAction.run {
+            randomX = CGFloat(arc4random_uniform(5) + 5)
+            randomY = CGFloat(arc4random_uniform(2) + 3)
+        }
+        //randomX = CGFloat(arc4random_uniform(5) + 5)
+        //randomY = CGFloat(arc4random_uniform(2) + 3)
         
-        var moveAction = SKAction()
+        //var moveAction = SKAction()
         var rollAction = SKAction()
         
         let Wait = SKAction.wait(forDuration: 0.75)
@@ -33,10 +40,11 @@ extension GameScene {
         let FadeOut = SKAction.fadeAlpha(to:  0, duration: 0.75)
         let FadeIn = SKAction.fadeAlpha(to: 1, duration: 0.75)
         
+       
         let SetFace = SKAction.run {
-            for die in self.currentDice {
-                self.setDieFace(die: die)
-            }
+            //for die in self.currentDiceArray {
+            self.setDieFace()
+            //}
         }
         
         let RepositionDice = SKAction.run {
@@ -50,43 +58,46 @@ extension GameScene {
             self.currentDie.position = randomPoint
         }
         
-        moveAction = SKAction.run {
-            
-            self.currentDie.physicsBody?.isDynamic = true
-            self.currentDie.physicsBody?.pinned = false
-            self.currentDie.physicsBody?.allowsRotation = true
-            
-            self.currentDie.physicsBody?.applyImpulse(CGVector(dx: randomX, dy: randomY))
-            self.currentDie.physicsBody?.applyTorque(3)
+        let moveAction = SKAction.run {
+            for die in self.currentDiceArray {
+                die.physicsBody?.isDynamic = true
+                die.physicsBody?.pinned = false
+                die.physicsBody?.allowsRotation = true
+                
+                die.physicsBody?.applyImpulse(CGVector(dx: randomX, dy: randomY))
+                die.physicsBody?.applyTorque(3)
+            }
         }
         
-        let Group = SKAction.group([rollAction])
-        let Seq = SKAction.sequence([Group, randomPosition, moveAction, SetFace, Wait, FadeOut, RepositionDice, FadeIn])
-        
+        let Group = SKAction.group([getRandomPoints, rollAction])
+        let Group2 = SKAction.group([Group, randomPosition, moveAction, SetFace, Wait, FadeOut, RepositionDice, FadeIn])
         for die in currentDiceArray {
-            currentDie = die
-            die.run(Seq)
-            die.run(SetFace)
+            die.run(Group2)
         }
         isComplete(true)
     }
+    */
     
-    func setDieFace(die: Die) {
-        switch die.faceValue{
-        case 1:
-            self.currentDie.texture = self.die1.unSelectedDieTexture
-        case 2:
-            self.currentDie.texture = self.die2.unSelectedDieTexture
-        case 3:
-            self.currentDie.texture = self.die3.unSelectedDieTexture
-        case 4:
-            self.currentDie.texture = self.die4.unSelectedDieTexture
-        case 5:
-            self.currentDie.texture = self.die5.unSelectedDieTexture
-        case 6:
-            self.currentDie.texture = self.die6.unSelectedDieTexture
-        default:
-            break
+    func setDieFace() {
+        for die in currentDiceArray {
+            die.faceValue = Int(arc4random_uniform(6)+1)
+            print(die.faceValue)
+            switch die.faceValue {
+            case 1:
+                die.texture = GameConstants.Textures.Die1
+            case 2:
+                die.texture = GameConstants.Textures.Die2
+            case 3:
+                die.texture = GameConstants.Textures.Die3
+            case 4:
+                die.texture = GameConstants.Textures.Die4
+            case 5:
+                die.texture = GameConstants.Textures.Die5
+            case 6:
+                die.texture = GameConstants.Textures.Die6
+            default:
+                break
+            }
         }
     }
     func repositionDice() {

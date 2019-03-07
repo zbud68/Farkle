@@ -12,48 +12,55 @@ extension GameScene {
     func getDice() {
         setupDice()
         setupDiePhysics()
-        addDice()
         positionDice()
-        //getDiceRoll()
+        addDice()
+        setupDieFaces()
     }
     
     func setupDice() {
-        die1.unSelectedDieTexture = GameConstants.Textures.Die1
-        die1.selectedDieTexture = GameConstants.Textures.Die1Selected
-        die1.texture = GameConstants.Textures.Die1
         die1.name = "Die 1"
-        die2.unSelectedDieTexture = GameConstants.Textures.Die2
-        die2.selectedDieTexture = GameConstants.Textures.Die2Selected
-        die2.texture = GameConstants.Textures.Die2
-        die2.name = "Die 2"
-        die3.texture = GameConstants.Textures.Die3
-        die3.unSelectedDieTexture = GameConstants.Textures.Die3
-        die3.selectedDieTexture = GameConstants.Textures.Die3Selected
-        die3.name = "Die 3"
-        die4.texture = GameConstants.Textures.Die4
-        die4.unSelectedDieTexture =  GameConstants.Textures.Die4
-        die4.selectedDieTexture = GameConstants.Textures.Die4Selected
-        die4.name = "Die 4"
-        die5.texture = GameConstants.Textures.Die5
-        die5.unSelectedDieTexture = GameConstants.Textures.Die5
-        die5.selectedDieTexture = GameConstants.Textures.Die5Selected
-        die5.name = "Die 5"
-        die6.texture = GameConstants.Textures.Die6
-        die6.unSelectedDieTexture = GameConstants.Textures.Die6
-        die6.selectedDieTexture = GameConstants.Textures.Die6Selected
-        die6.name = "Die 6"
+        die1.texture = GameConstants.Textures.Die1
+        die1.faceValue = 1
+        die1.pointValue = 1
+        die1.selected = false
         
+        die2.name = "Die 2"
+        die2.texture = GameConstants.Textures.Die2
+        die2.faceValue = 2
+        die2.pointValue = 1
+        die2.selected = false
+
+        die3.name = "Die 3"
+        die3.texture = GameConstants.Textures.Die3
+        die3.faceValue = 3
+        die3.pointValue = 1
+        die3.selected = false
+
+        die4.name = "Die 4"
+        die4.texture = GameConstants.Textures.Die4
+        die4.faceValue = 4
+        die4.pointValue = 1
+        die4.selected = false
+
+        die5.name = "Die 5"
+        die5.texture = GameConstants.Textures.Die5
+        die5.faceValue = 5
+        die5.pointValue = 1
+        die5.selected = false
+
+        die6.name = "Die 6"
+        die6.texture = GameConstants.Textures.Die6
+        die6.faceValue = 6
+        die6.pointValue = 1
+        die6.selected = false
+
         switch currentGame.numDice {
         case 5:
-            defaultDiceArray = [die1, die2, die3, die4, die5]
+            currentDiceArray = [die1, die2, die3, die4, die5]
         case 6:
-            defaultDiceArray = [die1, die2, die3, die4, die5, die6]
+            currentDiceArray = [die1, die2, die3, die4, die5, die6]
         default:
             break
-        }
-        currentDiceArray = defaultDiceArray
-        for die in defaultDiceArray {
-            currentDice.append(die)
         }
     }
     
@@ -102,43 +109,33 @@ extension GameScene {
             gameTable.addChild(die)
         }
     }
-
-    func resetDice() {
-        die1.texture = die1.unSelectedDieTexture
-        die1.name = "Die 1"
-        dieFace1.faceValue = 10
-        die2.texture = die2.unSelectedDieTexture
-        die2.name = "Die 2"
+    
+    func setupDieFaces() {
+        dieFace1.faceValue = 1
         dieFace2.faceValue = 2
-        die3.texture = die3.unSelectedDieTexture
-        die3.name = "Die 3"
         dieFace3.faceValue = 3
-        die4.texture = die4.unSelectedDieTexture
-        die4.name = "Die 4"
         dieFace4.faceValue = 4
-        die6.texture = die6.unSelectedDieTexture
-        die6.name = "Die 6"
+        dieFace5.faceValue = 5
         dieFace6.faceValue = 6
         
-        for die in currentDiceArray {
-            die.selected = false
-        }
+        dieFacesArray = [dieFace1, dieFace2, dieFace3, dieFace4, dieFace5, dieFace6]
     }
     
     func removeSelectedDice(isComplete: (Bool) -> Void) {
-        whatchaGot(isComplete: handlerBlock)
+        //whatchaGot(isComplete: handlerBlock)
         if currentDiceArray.isEmpty {
             startNewRoll()
         } else {
             var id = 0
             for die in currentDiceArray {
                 if die.selected == true {
+                    selectedDiceArray.append(die)
                     currentDiceArray.remove(at: id)
                     id += 1
                 }
             }
         }
-        print("current dice count: \(currentDiceArray.count)")
+        print("selected dice array: \(selectedDiceArray)")
         isComplete(true)
     }
 }

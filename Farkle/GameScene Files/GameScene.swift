@@ -14,9 +14,11 @@ enum GameState {
     case NewGame, InProgress, NewRound, GameOver
 }
 
+/*
 enum PlayerState {
     case SelectingDie, Idle, Rolling, FinalRoll, Finished
 }
+*/
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: ********** Class Variables Section **********
@@ -36,14 +38,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var playersArray: [Player]!
  
     //MARK: ********* Dice Variables **********
-    
-    let dieFace1: DieFaces = DieFaces.init(name: "dieFace1", faceValue: 1, pointValue: 10, countThisRoll: 0, scoringDie: false)
-    let dieFace2: DieFaces = DieFaces.init(name: "dieFace2", faceValue: 2, pointValue: 2, countThisRoll: 0, scoringDie: false)
-    let dieFace3: DieFaces = DieFaces.init(name: "dieFace3", faceValue: 3, pointValue: 3, countThisRoll: 0, scoringDie: false)
-    let dieFace4: DieFaces = DieFaces.init(name: "dieFace4", faceValue: 4, pointValue: 4, countThisRoll: 0, scoringDie: false)
-    let dieFace5: DieFaces = DieFaces.init(name: "dieFace5", faceValue: 5, pointValue: 5, countThisRoll: 0, scoringDie: false)
-    let dieFace6: DieFaces = DieFaces.init(name: "dieFace6", faceValue: 6, pointValue: 6, countThisRoll: 0, scoringDie: false)
 
+    var dieFace1: DieFaces = DieFaces()
+    var dieFace2: DieFaces = DieFaces()
+    var dieFace3: DieFaces = DieFaces()
+    var dieFace4: DieFaces = DieFaces()
+    var dieFace5: DieFaces = DieFaces()
+    var dieFace6: DieFaces = DieFaces()
+    
     var die1: Die = Die()
     var die2: Die = Die()
     var die3: Die = Die()
@@ -51,21 +53,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var die5: Die = Die()
     var die6: Die = Die()
 
-    var defaultDiceArray: [Die] = [Die]()
     var currentDiceArray: [Die] = [Die]()
     var selectedDiceArray: [Die] = [Die]()
-    var dieFacesArray: [DieFaces] = []
-
-    var unSelectedTextures: [SKTexture] = [GameConstants.Textures.Die1, GameConstants.Textures.Die2, GameConstants.Textures.Die3, GameConstants.Textures.Die4, GameConstants.Textures.Die5, GameConstants.Textures.Die6]
-    var selectedTextures: [SKTexture] = [GameConstants.Textures.Die1Selected, GameConstants.Textures.Die2Selected, GameConstants.Textures.Die3Selected, GameConstants.Textures.Die4Selected, GameConstants.Textures.Die5Selected, GameConstants.Textures.Die6Selected]
+    var dieFacesArray: [DieFaces] = [DieFaces]()
 
     var currentGame: Game = Game()
-    // faceValue, value, count
     var currentRoll: [(Int, Int, Int)] = [(face: Int, point: Int, count: Int)]()
-    var currentDice: [Die] = [Die]()
     var currentScore: Int = 0
-    var currentDie: Die = Die()
-
 
     //MARK: ********** GameScene Variables **********
     
@@ -121,27 +115,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var scoringCombo: ScoringCombo = ScoringCombo()
     var scoringDiceFaceValue: Int = 0
     
+    var dieTextures: [[SKTexture:SKTexture]] = [[:]]
+    
     // MARK: ********** didMove Section **********
     override func didMove(to view: SKView) {
-        
-        //positionDice()
-        setupBackGround()
-        setupGameTable()
-        setupIconWindow()
-        setupScoresWindow()
-        displayGameTable()
-        displayMainMenu()
-        displaySettingsMenu()
+
+        setupBackGround(isComplete: handlerBlock)
+        setupGameTable(isComplete: handlerBlock)
+        setupIconWindow(isComplete: handlerBlock)
+        setupScoresWindow(isComplete: handlerBlock)
+        displayGameTable(isComplete: handlerBlock)
+        displayMainMenu(isComplete: handlerBlock)
+        displaySettingsMenu(isComplete: handlerBlock)
         getDice()
     }
     
-    func displayGameTable() {
+    func displayGameTable(isComplete: (Bool) -> Void) {
         backGround.addChild(gameTable)
         gameTable.addChild(logo)
         logo.addChild(logo2)
+        
+        isComplete(true)
     }
     
-    func displayMainMenu() {
+    func displayMainMenu(isComplete: (Bool) -> Void) {
         mainMenu.texture = GameConstants.Textures.MainMenu
         mainMenu.name = "MainMenu"
         mainMenu.position = CGPoint(x: 0, y: 0)
@@ -150,15 +147,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if gameState == .NewGame {
             setupMainMenuIcons()
         }
+        isComplete(true)
     }
     
-    func displaySettingsMenu() {
+    func displaySettingsMenu(isComplete: (Bool) -> Void) {
         settingsMenu.texture = GameConstants.Textures.SettingsMenu
         settingsMenu.name = "SettingsMenu"
         settingsMenu.position = CGPoint(x: 0, y: 0)
         settingsMenu.size = CGSize(width: frame.size.width / 2, height: frame.size.height / 1.5)
         settingsMenu.zPosition = GameConstants.ZPositions.Menu
-        setupSettingsMenuIcons()
+        setupSettingsMenuIcons(isComplete: handlerBlock)
+        isComplete(true)
     }
 
     // MARK: ********** Touches Section **********
@@ -214,7 +213,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case "Pause":
                 pauseIconTouched()
             case "RollDice":
-                rollDice(isComplete: handlerBlock)
+                rollDice()
             case "KeepScore":
                 keepScoreIconTouched()
             default:
@@ -224,19 +223,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func wasDiceTouched() {
-        for die in currentDiceArray where die.contains(gameTableTouchLocation){
-            if die.selected == true {
-                die.selected = false
-                die.texture = die.unSelectedDieTexture
-                die.physicsBody?.isDynamic = true
-            } else {
+        
+        var id = 0
+        for die in currentDiceArray {
+            if die.contains(gameTableTouchLocation) {
                 die.selected = true
-                die.texture = die.selectedDieTexture
-                die.physicsBody?.isDynamic = false
-                whatchaGot(isComplete: handlerBlock)
+                selectedDiceArray.append(die)
+            } else {
+                //currentDiceArray.remove(at: id)
+            
             }
-            die.currentDieTexture = die.texture!
+            id += 1
         }
+        print("selected die: \(selectedDiceArray)")
+        whatchaGot(isComplete: handlerBlock)
     }
 
     func newGameIconTouched() {
@@ -334,6 +334,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         currentPlayer.nameLabel.fontColor = GameConstants.Colors.PlayerNameLabelFont
         currentPlayer.scoreLabel.fontColor = GameConstants.Colors.PlayerScoreLabelFont
         setupDice()
+        selectedDiceArray.removeAll()
         //resetDice()
         //repositionDice()
         currentPlayer.currentRollScore = 0
@@ -344,6 +345,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func startNewRoll() {
+        currentPlayer.currentRollScore += currentScore
         setupDice()
         currentScore = 0
         //zeroOutDieCount()
@@ -377,7 +379,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func showMainMenu() {
         hideSettingMenu()
         hideIconWindowIcons()
-        addMainMenu()
+        addMainMenu(isComplete: handlerBlock)
      }
     
     func hideMainMenu() {
@@ -393,7 +395,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func showSettingsMenu() {
         hideMainMenu()
         hideIconWindowIcons()
-        addSettingsMenu()
+        addSettingsMenu(isComplete: handlerBlock)
     }
     
     func hideSettingMenu() {
@@ -406,7 +408,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func showIconWindowIcons() {
         hideMainMenu()
         hideSettingMenu()
-        addIconWindowIcons()
+        addIconWindowIcons(isComplete: handlerBlock)
         for icon in iconWindowIconsArray {
             icon.isPaused = false
         }
@@ -457,6 +459,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    /*
     var playerState = PlayerState.Idle {
         willSet {
             switch newValue {
@@ -475,22 +478,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
+    */
     
     func printScore(label: String, currentP: Int, currentS: Int) {
-        //print("From: \(label)\nCurrentPlayer: \(currentPlayer.currentRollScore)\nCurrentScore: \(currentScore)")
+        print("From: \(label)\nCurrentPlayer: \(currentPlayer.currentRollScore)\nCurrentScore: \(currentScore)")
     }
     
     let handlerBlock: (Bool) -> Void = {
         if $0 {
             var finished = false
             finished.toggle()
+            //print("finished handler block")
         }
     }
     
     // MARK: ********** Updates Section **********
     
     override func update(_ currentTime: TimeInterval) {
-        //currentScoreLabel.text = "\(currentPlayer.name) score: \(currentScore)"
+      currentScoreLabel.text = "\(currentPlayer.name) score: \(currentScore)"
 
     }
 }
