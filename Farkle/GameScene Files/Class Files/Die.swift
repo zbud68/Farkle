@@ -14,5 +14,6 @@ class Die: SKSpriteNode {
     var faceValue: Int = Int()
     var pointValue: Int = Int()
     var scoringDie: Bool = false
+    var diePosition: CGPoint = CGPoint()
 
 }

@@ -37,7 +37,7 @@ extension GameScene {
         infoIcon.texture = SKTexture(imageNamed: "GreenInfo")
         infoIcon.name = "Info"
         infoIcon.size = CGSize(width: 24, height: 24)
-        infoIcon.position = CGPoint(x: mainMenu.frame.maxX - 50, y: mainMenu.frame.minY + 35)
+        infoIcon.position = CGPoint(x: mainMenu.frame.maxX - infoIcon.size.width / 1.25, y: mainMenu.frame.minY + infoIcon.size.height * 1.25)
         infoIcon.zPosition = GameConstants.ZPositions.Icon
         
         setupMainMenuLabels(isComplete: handlerBlock)
@@ -126,7 +126,7 @@ extension GameScene {
     
     func addMainMenu(isComplete: (Bool) -> Void) {
         
-        self.addChild(mainMenu)
+        gameTable.addChild(mainMenu)
         mainMenu.addChild(newGameIcon)
         mainMenu.addChild(resumeIcon)
         mainMenu.addChild(settingsIcon)

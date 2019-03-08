@@ -13,6 +13,7 @@ extension GameScene {
         pauseIcon.name = "Pause"
         pauseIcon.size = CGSize(width: 32, height: 32)
         pauseIcon.zPosition = GameConstants.ZPositions.Icon
+        pauseIcon.zRotation = 0
         
         pauseIcon.position = CGPoint(x: (pauseIcon.size.width / 2) - (iconWindow.size.width / 3) + 3, y: iconWindow.size.height / 3 - pauseIcon.size.height)
         
@@ -21,12 +22,14 @@ extension GameScene {
         rollDiceIcon.name = "RollDice"
         rollDiceIcon.size = CGSize(width: 60, height: 40)
         rollDiceIcon.zPosition = GameConstants.ZPositions.Dice
+        rollDiceIcon.zRotation = 0
         
         keepScoreIcon.texture = SKTexture(imageNamed: "IconGreen")
         keepScoreIcon.position = CGPoint(x: rollDiceIcon.position.x, y: rollDiceIcon.position.y - 40)
         keepScoreIcon.name = "KeepScore"
         keepScoreIcon.size = CGSize(width: 60, height: 40)
         keepScoreIcon.zPosition = GameConstants.ZPositions.Dice
+        keepScoreIcon.zRotation = 0
         
         setupIconWindowIconsArray(isComplete: handlerBlock)
         isComplete(true)

@@ -9,6 +9,8 @@
 import SpriteKit
 
 extension GameScene {
+
+}
     
     //MARK: ********** Roll Dice **********
  
@@ -78,51 +80,3 @@ extension GameScene {
     }
     */
     
-    func setDieFace() {
-        for die in currentDiceArray {
-            die.faceValue = Int(arc4random_uniform(6)+1)
-            print(die.faceValue)
-            switch die.faceValue {
-            case 1:
-                die.texture = GameConstants.Textures.Die1
-            case 2:
-                die.texture = GameConstants.Textures.Die2
-            case 3:
-                die.texture = GameConstants.Textures.Die3
-            case 4:
-                die.texture = GameConstants.Textures.Die4
-            case 5:
-                die.texture = GameConstants.Textures.Die5
-            case 6:
-                die.texture = GameConstants.Textures.Die6
-            default:
-                break
-            }
-        }
-    }
-    func repositionDice() {
-        for die in currentDiceArray {
-            die.zRotation = 0
-            die.zPosition = GameConstants.ZPositions.Dice
-            die.size = GameConstants.Sizes.Dice
-            die.physicsBody?.isDynamic = true
-            
-            switch die.name {
-            case "Die 1":
-                die1.position = CGPoint(x: -(gameTable.size.width / 7), y: gameTable.frame.minY + 100)
-            case "Die 2":
-                die2.position = CGPoint(x: die1.position.x + die2.size.width, y: gameTable.frame.minY + 100)
-            case "Die 3":
-                die3.position = CGPoint(x: die2.position.x + die3.size.width, y: gameTable.frame.minY + 100)
-            case "Die 4":
-                die4.position = CGPoint(x: die3.position.x + die4.size.width, y: gameTable.frame.minY + 100)
-            case "Die 5":
-                die5.position = CGPoint(x: die4.position.x + die5.size.width, y: gameTable.frame.minY + 100)
-            case "Die 6":
-                die6.position = CGPoint(x: die5.position.x + die6.size.width, y: gameTable.frame.minY + 100)
-            default:
-                break
-            }
-        }
-    }
-}

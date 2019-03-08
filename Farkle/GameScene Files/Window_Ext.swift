@@ -14,6 +14,7 @@ extension GameScene {
         iconWindow.position = CGPoint(x: ((backGround.frame.minX) + (iconWindow.size.width / 2)) + 5, y: ((backGround.frame.maxY) - (iconWindow.size.height / 2)) - 10)
         iconWindow.zPosition = GameConstants.ZPositions.Window
         iconWindow.name = "Icon Window"
+        iconWindow.zRotation = 0
 
         backGround.addChild(iconWindow)
         setupIconWindowIcons(isComplete: handlerBlock)
@@ -26,6 +27,7 @@ extension GameScene {
         scoresWindow.position = CGPoint(x: iconWindow.position.x, y: (iconWindow.position.y - (iconWindow.size.height * 2) + 10))
         scoresWindow.zPosition = GameConstants.ZPositions.Window
         scoresWindow.name = "Player Scores Window"
+        scoresWindow.zRotation = 0
 
         backGround.addChild(scoresWindow)
         isComplete(true)

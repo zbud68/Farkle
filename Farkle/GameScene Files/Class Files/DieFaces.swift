@@ -10,5 +10,6 @@ import SpriteKit
 
 class DieFaces {
     var faceValue: Int = 0
+    var pointValue: Int = 0
     var countThisRoll: Int = 0
 }

@@ -25,6 +25,7 @@ extension GameScene {
         gameTable.physicsBody?.categoryBitMask = 1
         gameTable.physicsBody?.collisionBitMask = 1
         gameTable.physicsBody?.contactTestBitMask = 1
+        gameTable.zRotation = 0
 
         setupLogo(isComplete: handlerBlock)
         setupCurrentScoreLabel(isComplete: handlerBlock)
@@ -39,6 +40,7 @@ extension GameScene {
         logo.alpha = 0.65
         logo.position = CGPoint(x: 0, y: -50)
         logo.zPosition = GameConstants.ZPositions.Logo
+        logo.zRotation = 0
         
         logo2.fontName = GameConstants.StringConstants.FontName
         logo2.fontColor = GameConstants.Colors.LogoFont
@@ -48,6 +50,7 @@ extension GameScene {
         
         logo2.zPosition = GameConstants.ZPositions.Logo
         logo2.position = CGPoint(x: -185, y: -25)
+        logo2.zRotation = 0
         isComplete(true)
     }
     
@@ -60,10 +63,10 @@ extension GameScene {
         currentScoreLabel.fontColor = GameConstants.Colors.LogoFont
         currentScoreLabel.fontSize = 24
         currentScoreLabel.alpha = 1
+        currentScoreLabel.zRotation = 0
         currentScoreLabel.position = CGPoint(x: 0, y: gameTable.frame.maxY - (gameTable.size.height / 4))
         isComplete(true)
     }
-    
     
     func fadeScoreLabel(isComplete: (Bool) -> Void) {
         //GameTable.addChild(currentScoreLabel)

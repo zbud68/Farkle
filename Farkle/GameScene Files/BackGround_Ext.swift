@@ -14,6 +14,7 @@ extension GameScene {
         backGround.zPosition = GameConstants.ZPositions.BackGround
         backGround.name = GameConstants.StringConstants.BackGroundName
         backGround.position = CGPoint(x: 0, y: 0)
+        backGround.zRotation = 0
 
         addChild(backGround)
         isComplete(true)
