@@ -14,9 +14,13 @@ extension GameScene {
         for count in dieFacesArray {
             count.countThisRoll = 0
         }
-        
+        let currentDice = diceArray
+        for die in currentDice {
+            die.selected = false
+            die.selectable = true
+        }
         currentRoll.removeAll()
-        scoringCombo.scoringDice = false
+        //scoringCombo.scoringDice = false
         scoringCombo.pairs = 0
         scoringCombo.threeOAK = false
         scoringCombo.threePair = false
@@ -28,19 +32,35 @@ extension GameScene {
     }
     
     func rollDice(isComplete: (Bool) -> Void) {
-        resetVariables()
-        var currentScore = 0
-        
-        let currentDice = getNewDice()
-        
-        for die in currentDice {
-            setDieImage(die: die)
+        var currentDice = [Die]()
+        for die in diceArray {
+            if die.selected == true {
+                die.selectable = false
+                die.physicsBody?.isDynamic = false
+                selectedDice = diceArray.filter { $0.selected == true }
+                currentDice = diceArray.filter { $0.selectable == true }
+            }
         }
+        for die in currentDice {
+            print("current die: \(die.name!)")
+        }
+        diceArray = getNewDice()
+        currentDice.removeAll()
+        currentDice = diceArray
+        for die in currentDice {
+            if die.selected == true {
+                die.physicsBody?.isDynamic = false
+            } else {
+                animateDice(die: die, isComplete: handlerBlock)
+            }
+        }
+        
+        var currentScore = 0
+
         currentScore = tallyTheScore(dice: currentDice)
- 
-        printFindings()
-        isComplete(true)
         currentScoreLabel.text = String(currentScore)
+        resetVariables()
+        isComplete(true)
     }
     
     func getNewDice() -> [Die] {
@@ -49,6 +69,7 @@ extension GameScene {
         var dieID = 0
         for die in diceArray where die.selected != true {
             die.faceValue = Int(arc4random_uniform(6)+1)
+            setDieImage(die: die)
             dieID += 1
         }
         return currentDice
@@ -166,10 +187,13 @@ extension GameScene {
             }
             dieID += 1
         }
-        
-        if scoringCombo.scoringDice == false {
-            print("farkle")
-            farkle()
+        print("scoring dice: \(scoringCombo.scoringDice)")
+        if firstRoll != true {
+            if scoringCombo.scoringDice == false {
+                print("farkle")
+                farkle()
+            }
+            firstRoll = false
         }
         //whatchaGot(isComplete: handlerBlock)
         print("selected die count: \(selectedDice.count)")

@@ -140,8 +140,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let offsetY = CGFloat(48)
     var firstRoll = true
     
+    var currentDiceArray: [Die] = [Die]()
+   
     // MARK: ********** didMove Section **********
     override func didMove(to view: SKView) {
+        
         var dieID = 0
         for _ in 1...6 {
             diePositions.append(CGPoint(x: 0, y: 0))
@@ -256,31 +259,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func wasDiceTouched() {
-        print("entered wasDiceTouched")
-        
-        var dieID = 0
-        //var originalPosition = CGPoint()
-        for die in diceArray {
+        var currentDice = diceArray
+        var currentRollScore = 0
+        for die in currentDice {
             if die.contains(placeHolderTouchLocation) {
-                die.selected = true
-                //processDie(die: die, dieID: dieID, isComplete: handlerBlock)
-                currentScoreLabel.text = "hello world"
-                currentScoreLabel.text = String(currentScore)
-            } else {
-                die.selected = false
+                if die.selectable == true {
+                    if die.selected != true {
+                        die.selected = true
+                        selectedDice = currentDice.filter {$0.selected == true}
+                        currentDice = currentDice.filter {$0.selected == false}
+                        setDieImage(die: die)
+                    } else if die.selected == true {
+                        die.selected = false
+                        setDieImage(die: die)
+                    }
+                }
             }
-            if selectedDice.count == currentGame.numDice {
-                startNewRoll()
-            }
-            dieID += 1
         }
-        print("selected die: \(selectedDice)")
+        
+        selectedDice = currentDice.filter { $0.selected == true }
+
+        currentRollScore = tallyTheScore(dice: currentDice)
+        currentScoreLabel.text = String(currentRollScore)
         //whatchaGot(isComplete: handlerBlock)
     }
     
     func setDieImage(die: Die) {
         print("entered setDieImage")
         if die.selected == true {
+            print("die selected: \(die.selected),  die face value: \(die.faceValue)")
             switch die.faceValue {
             case 1:
                 die.texture = GameConstants.Textures.Die1Selected
@@ -588,53 +595,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             finished.toggle()
         }
     }
-    
-    func setupPlaceHolderWindow() {
-        placeHolderWindow = SKSpriteNode(texture: SKTexture(imageNamed: "DiePlaceHolderWindow"))
-        placeHolderWindow.name = "Place Holder Window"
-        placeHolderWindow.size = CGSize(width: 64, height: 310)
-        placeHolderWindow.alpha = 1
-        placeHolderWindow.zPosition = GameConstants.ZPositions.PlaceHolderWindow
-        placeHolderWindow.position = CGPoint(x: gameTable.frame.midX + gameTable.size.width /  4, y: gameTable.frame.midY)
-        placeHolderWindow.zRotation = 0
-        gameTable.addChild(placeHolderWindow)
-        addDiePlaceHolders()
-    }
-    
-    func setupDiePlaceHolders() {
-        die1_PlaceHolder = SKSpriteNode(imageNamed: "Die1")
-        die2_PlaceHolder = SKSpriteNode(imageNamed: "Die2")
-        die3_PlaceHolder = SKSpriteNode(imageNamed: "Die3")
-        die4_PlaceHolder = SKSpriteNode(imageNamed: "Die4")
-        die5_PlaceHolder = SKSpriteNode(imageNamed: "Die5")
-        die6_PlaceHolder = SKSpriteNode(imageNamed: "Die6")
-        
-        placeHolderArray = [die1_PlaceHolder, die2_PlaceHolder, die3_PlaceHolder, die4_PlaceHolder, die5_PlaceHolder, die6_PlaceHolder]
-        
-        for diePlaceHolder in placeHolderArray {
-            diePlaceHolder.zRotation = 0
-            diePlaceHolder.size  = CGSize(width: 48, height: 48)
-            diePlaceHolder.zPosition = GameConstants.ZPositions.PlaceHolder
-            diePlaceHolder.alpha = 1
-        }
-        
-        die1_PlaceHolder.position = CGPoint(x: 0, y: (placeHolderWindow.frame.midY + (placeHolderWindow.size.height / 2)) - (placeHolder.size.height / 2) - 36)
-        die2_PlaceHolder.position = CGPoint(x: die1_PlaceHolder.position.x, y: die1_PlaceHolder.position.y - offsetY)
-        die3_PlaceHolder.position = CGPoint(x: die2_PlaceHolder.position.x, y: die2_PlaceHolder.position.y - offsetY)
-        die4_PlaceHolder.position = CGPoint(x: die3_PlaceHolder.position.x, y: die3_PlaceHolder.position.y - offsetY)
-        die5_PlaceHolder.position = CGPoint(x: die4_PlaceHolder.position.x, y: die4_PlaceHolder.position.y - offsetY)
-        die6_PlaceHolder.position = CGPoint(x: die5_PlaceHolder.position.x, y: die5_PlaceHolder.position.y - offsetY)
-        
-        addDiePlaceHolders()
-    }
-    
-    func addDiePlaceHolders() {
-        for placeHolder in placeHolderArray {
-            placeHolderWindow.addChild(placeHolder)
-            placeHolderLocations.append(placeHolder.position)
-        }
-    }
-    
     
     // MARK: ********** Updates Section **********
     

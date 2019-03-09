@@ -108,6 +108,7 @@ struct GameConstants {
     struct PhysicsCategory {
         static let Dice = UInt32(1)
         static let Frame = UInt32(2)
+        static let Window = UInt32(3)
     }
 
     struct Messages {

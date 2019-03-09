@@ -1,60 +1,39 @@
- import SpriteKit
- 
-        class Die: SKSpriteNode {
-            
-            var selected: Bool = false
-            var faceValue: Int = Int()
-            var pointValue: Int = Int()
-            var scoringDie: Bool = false
-            
-        }
- 
-         class DieFaces {
-            var faceValue: Int = 0
-            var countThisRoll: Int = 0
-         }
- 
- var dieFace1: DieFaces = DieFaces()
- var dieFace2: DieFaces = DieFaces()
- var dieFace3: DieFaces = DieFaces()
- var dieFace4: DieFaces = DieFaces()
- var dieFace5: DieFaces = DieFaces()
- var dieFace6: DieFaces = DieFaces()
- 
- var die1: Die = Die()
- var die2: Die = Die()
- var die3: Die = Die()
- var die4: Die = Die()
- var die5: Die = Die()
- var die6: Die = Die()
+class Die {
+    
+    var name: String = ""
+    var count: Int = 0
+    var selected: Bool = false
+}
 
-        let currentDiceRoll: [Die] = []
-        
-        var id = 0
-        for die in currentDiceRoll {
-            die.faceValue = Int(arc4random_uniform(6)+1)
-            
-            switch die.faceValue {
-            case 1:
-                die.texture = SKTexture(imageNamed: "Die1")
-            case 2:
-                die.texture = SKTexture(imageNamed: "Die2")
-                dieFace2.countThisRoll += 1
-            case 3:
-                die.texture = SKTexture(imageNamed: "Die3")
-                dieFace3.countThisRoll += 1
-            case 4:
-                die.texture = SKTexture(imageNamed: "Die4")
-                dieFace4.countThisRoll += 1
-            case 5:
-                die.texture = SKTexture(imageNamed: "Die5")
-                dieFace5.countThisRoll += 1
-            case 6:
-                die.texture = SKTexture(imageNamed: "Die6")
-                dieFace6.countThisRoll += 1
-            default:
-                break
-            }
-            id += 1
-        }
+var die1 = Die()
+die1.name = "Die1"
+var die2 = Die()
+die2.name = "Die2"
+var die3 = Die()
+die3.name = "Die3"
+var die4 = Die()
+die4.name = "Die4"
+var die5 = Die()
+die5.name = "Die5"
+var die6 = Die()
+die6.name = "Die6"
+
+die1.selected = true
+die3.selected = true
+die6.selected = true
+
+var currentDice = [die1, die2, die3, die4, die5, die6]
+
+for die in currentDice {
+    print("current Dice: \(die.name)")
+    print("is selected: \(die.selected)")
+}
+print(currentDice.count)
+currentDice = currentDice.filter { $0.selected == false }
+print(currentDice.count)
+
+for die in currentDice {
+    print("current Dice: \(die.name)")
+    print("is selected: \(die.selected)")
+}
 
