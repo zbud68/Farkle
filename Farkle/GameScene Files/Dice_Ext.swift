@@ -57,44 +57,36 @@ extension GameScene {
     
         die1.name = "Die 1"
         die1.texture = GameConstants.Textures.Die1
-        die1.faceValue = 1
-        die1.pointValue = 10
         die1.selected = false
         die1.zRotation = 0
         die1.alpha = 1
+
         die2.name = "Die 2"
         die2.texture = GameConstants.Textures.Die2
-        die2.faceValue = 2
-        die2.pointValue = 2
         die2.selected = false
         die2.zRotation = 0
         die2.alpha = 1
+
         die3.name = "Die 3"
         die3.texture = GameConstants.Textures.Die3
-        die3.faceValue = 3
-        die3.pointValue = 3
         die3.selected = false
         die3.zRotation = 0
         die3.alpha = 1
 
         die4.name = "Die 4"
         die4.texture = GameConstants.Textures.Die4
-        die4.faceValue = 4
-        die4.pointValue = 4
         die4.selected = false
         die4.zRotation = 0
         die4.alpha = 1
+
         die5.name = "Die 5"
         die5.texture = GameConstants.Textures.Die5
-        die5.faceValue = 5
-        die5.pointValue = 5
         die5.selected = false
         die5.zRotation = 0
         die5.alpha = 1
+
         die6.name = "Die 6"
         die6.texture = GameConstants.Textures.Die6
-        die6.faceValue = 6
-        die6.pointValue = 6
         die6.selected = false
         die6.zRotation = 0
 

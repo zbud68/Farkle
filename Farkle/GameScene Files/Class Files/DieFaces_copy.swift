@@ -8,15 +8,16 @@
 
 import SpriteKit
 
-struct DieFaces {
-    var faceValue: Int = 0
-    var pointValue: Int = 0
+class DieFaces_copy {
+    var value: Int = 0
+    var points: Int = 0
     var countThisRoll: Int = 0
     var scoringDie: Bool = false
-    
+    var die: Die_copy = Die_copy()
+   
     init(value: Int, points: Int, scoringDie: Bool) {
-        self.faceValue = value
-        self.pointValue = points
+        self.value = value
+        self.points = points
         self.scoringDie = scoringDie
     }
 }

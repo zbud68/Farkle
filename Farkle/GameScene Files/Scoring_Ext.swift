@@ -12,7 +12,8 @@ extension GameScene {
     
     func resetVariables() {
         for count in dieFacesArray {
-            count.countThisRoll = 0
+            var dieCount = count
+            dieCount.countThisRoll = 0
         }
         let currentDice = diceArray
         for die in currentDice {
@@ -76,6 +77,8 @@ extension GameScene {
     }
     
     func tallyTheScore(dice: [Die]) -> Int {
+        checkForAStraight()
+
         var currentRollScore = 0
         let currentDice = dice
         
@@ -90,7 +93,6 @@ extension GameScene {
                 scoringCombo.scoringDice = true
             }
         }
-        checkForAStraight()
         currentRollScore = checkForThreeOfAKind(score: currentRollScore)
         return currentRollScore
     }

@@ -21,6 +21,7 @@ enum PlayerState {
 */
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
+    
     // MARK: ********** Class Variables Section **********
     
     let physicsContactDelegate = self
@@ -39,12 +40,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
  
     //MARK: ********* Dice Variables **********
 
-    var dieFace1: DieFaces = DieFaces()
-    var dieFace2: DieFaces = DieFaces()
-    var dieFace3: DieFaces = DieFaces()
-    var dieFace4: DieFaces = DieFaces()
-    var dieFace5: DieFaces = DieFaces()
-    var dieFace6: DieFaces = DieFaces()
+    var dieFace1: DieFaces = DieFaces(value: 1, points: 10, scoringDie: true)
+    var dieFace2: DieFaces = DieFaces(value: 2, points: 2, scoringDie: false)
+    var dieFace3: DieFaces = DieFaces(value: 3, points: 3, scoringDie: false)
+    var dieFace4: DieFaces = DieFaces(value: 4, points: 4, scoringDie: false)
+    var dieFace5: DieFaces = DieFaces(value: 5, points: 5, scoringDie: true)
+    var dieFace6: DieFaces = DieFaces(value: 6, points: 6, scoringDie: true)
     
     var die1: Die = Die()
     var die2: Die = Die()
@@ -141,10 +142,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var firstRoll = true
     
     var currentDiceArray: [Die] = [Die]()
-   
+       
     // MARK: ********** didMove Section **********
     override func didMove(to view: SKView) {
-        
         var dieID = 0
         for _ in 1...6 {
             diePositions.append(CGPoint(x: 0, y: 0))
