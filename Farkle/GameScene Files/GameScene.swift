@@ -40,12 +40,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
  
     //MARK: ********* Dice Variables **********
 
-    var dieFace1: DieFaces = DieFaces(value: 1, points: 10, scoringDie: true)
-    var dieFace2: DieFaces = DieFaces(value: 2, points: 2, scoringDie: false)
-    var dieFace3: DieFaces = DieFaces(value: 3, points: 3, scoringDie: false)
-    var dieFace4: DieFaces = DieFaces(value: 4, points: 4, scoringDie: false)
-    var dieFace5: DieFaces = DieFaces(value: 5, points: 5, scoringDie: true)
-    var dieFace6: DieFaces = DieFaces(value: 6, points: 6, scoringDie: true)
+    var dieFace1: DieFace = DieFace(faceValue: 1, pointValue: 10, scoringDie: true)
+    var dieFace2: DieFace = DieFace(faceValue: 2, pointValue: 2, scoringDie: false)
+    var dieFace3: DieFace = DieFace(faceValue: 3, pointValue: 3, scoringDie: false)
+    var dieFace4: DieFace = DieFace(faceValue: 4, pointValue: 4, scoringDie: false)
+    var dieFace5: DieFace = DieFace(faceValue: 5, pointValue: 5, scoringDie: true)
+    var dieFace6: DieFace = DieFace(faceValue: 6, pointValue: 6, scoringDie: false)
     
     var die1: Die = Die()
     var die2: Die = Die()
@@ -56,10 +56,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     var diceArray: [Die] = [Die]()
     var selectedDice: [Die] = [Die]()
-    var dieFacesArray: [DieFaces] = [DieFaces]()
+    var dieFacesArray: [DieFace] = [DieFace]()
+    var dieFaces: [DieFace] = [DieFace]()
 
     var currentGame: Game = Game()
-    var currentRoll: [(Int, Int, Int)] = [(face: Int, point: Int, count: Int)]()
     var currentScore: Int = 0
 
     //MARK: ********** GameScene Variables **********
@@ -114,9 +114,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var settingsMenuTouchLocation: CGPoint = CGPoint(x: 0, y: 0)
     
     var scoringCombo: ScoringCombo = ScoringCombo()
-    var scoringDiceFaceValue: Int = 0
-    
-    var dieTextures: [[SKTexture:SKTexture]] = [[:]]
     
     var die1Position: CGPoint = CGPoint()
     var die2Position: CGPoint = CGPoint()
@@ -160,7 +157,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         displaySettingsMenu(isComplete: handlerBlock)
         setupPlaceHolderWindow()
         setupDiePlaceHolders()
-        getDice()
+
     }
     
     func displayGameTable(isComplete: (Bool) -> Void) {
@@ -204,7 +201,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             gameTableTouchLocation = touch.location(in: gameTable)
             placeHolderTouchLocation = touch.location(in: placeHolderWindow)
         }
-        print("place holder touch location: \(placeHolderTouchLocation)")
         wasMainMenuIconTouched()
         wasSettingsMenuIconTouched()
         wasIconWindowIconTouched()
@@ -259,9 +255,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func wasDiceTouched() {
-        var currentDice = diceArray
+        let currentDice = diceArray
         var currentRollScore = 0
         for die in currentDice {
+            if die.contains(placeHolderTouchLocation) {
+
+                if die.selected {
+                    die.selectable = false
+                } else {
+                    die.selected = true
+                    die.selectable = false
+                    die.texture = die.currentFace.selectedTexture
+                    currentRollScore = tallyTheScore(dice: currentDice, rollScore: currentRollScore)
+                }
+            }
+        }
+
+        /*
             if die.contains(placeHolderTouchLocation) {
                 if die.selectable == true {
                     if die.selected != true {
@@ -269,95 +279,50 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         selectedDice = currentDice.filter {$0.selected == true}
                         currentDice = currentDice.filter {$0.selected == false}
                         setDieImage(die: die)
-                    } else if die.selected == true {
+                    } /*else if die.selected == true {
                         die.selected = false
                         setDieImage(die: die)
-                    }
+                    
+                    }*/
                 }
             }
         }
         
+        */
         selectedDice = currentDice.filter { $0.selected == true }
-
-        currentRollScore = tallyTheScore(dice: currentDice)
-        currentScoreLabel.text = String(currentRollScore)
+        if selectedDice.count == currentGame.numDice {
+            for die in diceArray {
+                die.selectable = false
+            }
+            startNewRoll()
+        }
+        
+        //currentRollScore = tallyTheScore(dice: currentDice)
+        currentScoreLabel.text = String(currentScore)
         //whatchaGot(isComplete: handlerBlock)
     }
     
     func setDieImage(die: Die) {
-        print("entered setDieImage")
         if die.selected == true {
-            print("die selected: \(die.selected),  die face value: \(die.faceValue)")
-            switch die.faceValue {
-            case 1:
-                die.texture = GameConstants.Textures.Die1Selected
-                dieFace1.countThisRoll += 1
-                print("dieFace1 count: \(dieFace1.countThisRoll)\n")
-            case 2:
-                die.texture = GameConstants.Textures.Die2Selected
-                dieFace2.countThisRoll += 1
-                print("dieFace2 count: \(dieFace2.countThisRoll)\n")
-            case 3:
-                die.texture = GameConstants.Textures.Die3Selected
-                dieFace3.countThisRoll += 1
-                print("dieFace3 count: \(dieFace3.countThisRoll)\n")
-            case 4:
-                die.texture = GameConstants.Textures.Die4Selected
-                dieFace4.countThisRoll += 1
-                print("dieFace4 count: \(dieFace4.countThisRoll)\n")
-            case 5:
-                die.texture = GameConstants.Textures.Die5Selected
-                dieFace5.countThisRoll += 1
-                print("dieFace5 count: \(dieFace5.countThisRoll)\n")
-            case 6:
-                die.texture = GameConstants.Textures.Die6Selected
-                dieFace6.countThisRoll += 1
-                print("dieFace6 count: \(dieFace6.countThisRoll)\n")
-            default:
-                break
-            }
+            die.texture = die.currentFace.selectedTexture
+            die.physicsBody?.isDynamic = false
         } else {
-            switch die.faceValue {
-            case 1:
-                die.texture = GameConstants.Textures.Die1
-                dieFace1.countThisRoll += 1
-                print("dieFace1 count: \(dieFace1.countThisRoll)\n")
-            case 2:
-                die.texture = GameConstants.Textures.Die2
-                dieFace2.countThisRoll += 1
-                print("dieFace2 count: \(dieFace2.countThisRoll)\n")
-            case 3:
-                die.texture = GameConstants.Textures.Die3
-                dieFace3.countThisRoll += 1
-                print("dieFace3 count: \(dieFace3.countThisRoll)\n")
-            case 4:
-                die.texture = GameConstants.Textures.Die4
-                dieFace4.countThisRoll += 1
-                print("dieFace4 count: \(dieFace4.countThisRoll)\n")
-            case 5:
-                die.texture = GameConstants.Textures.Die5
-                dieFace5.countThisRoll += 1
-                print("dieFace5 count: \(dieFace5.countThisRoll)\n")
-            case 6:
-                die.texture = GameConstants.Textures.Die6
-                dieFace6.countThisRoll += 1
-                print("dieFace6 count: \(dieFace6.countThisRoll)\n")
-            default:
-                break
-            }
+            die.texture = die.currentFace.unSelectedTexture
+            die.physicsBody?.isDynamic = true
         }
     }
-
+    
     func newGameIconTouched() {
+        /*
         if gameState == .InProgress {
             //displayGameInProgressWarning()
         } else {
+        */
             showIconWindowIcons()
             gameTable.addChild(currentScoreLabel)
             fadeScoreLabel(isComplete: handlerBlock)
-            //gameState = .NewGame
             setupNewGame()
-        }
+        //}
     }
     
     func setupNewGame() {
@@ -367,6 +332,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         currentPlayerID = 0
         currentPlayer.nameLabel.fontColor = GameConstants.Colors.PlayerNameLabelFont
         currentPlayer.scoreLabel.fontColor = GameConstants.Colors.PlayerScoreLabelFont
+        getDice()
+        setupDice()
     }
     
     func getCurrentGameSettings() {
@@ -436,7 +403,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             currentPlayerID = 0
             startNewRound()
-            //gameState = .NewRound
         }
 
         currentPlayer = playersArray[currentPlayerID]
@@ -455,14 +421,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let currentDiceArray = diceArray
         firstRoll = true
         selectedDice.removeAll()
-        currentPlayer.currentRollScore += currentScore
-        positionDice()
+        //currentPlayer.currentRollScore += currentScore
+        //positionDice()
         resetVariables()
-        currentScore = 0
+        //currentScore = 0
 
         for die in currentDiceArray {
             die.selected = false
             die.physicsBody?.isDynamic = true
+            setDieImage(die: die)
         }
     }
     
@@ -567,27 +534,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    
-    /*
-    var playerState = PlayerState.Idle {
-        willSet {
-            switch newValue {
-            case .SelectingDie:
-                print("selecting die")
-            case .Idle:
-                print("player state: \(playerState)")
-            case .Rolling:
-                rollDice(isComplete: handlerBlock)
-            case .Finished:
-                print("Player has finished")
-            //currentPlayer.finished = true
-            case .FinalRoll:
-                print("Player has one final roll")
-            //currentPlayer.finalRoll = true
-            }
-        }
-    }
-    */
     
     let handlerBlock: (Bool) -> Void = {
         if $0 {

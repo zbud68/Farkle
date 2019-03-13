@@ -12,9 +12,7 @@ class Die: SKSpriteNode {
     
     var selected: Bool = false
     var selectable: Bool = true
-    var faceValue: Int = Int()
-    var pointValue: Int = Int()
-    var scoringDie: Bool = false
     var diePosition: CGPoint = CGPoint()
-    //var dieFace: DieFaces = DieFaces(value: 0, points: 0, scoringDie: false)
+    var currentFace: DieFace = DieFace(faceValue: 0, pointValue: 0, scoringDie: false)
+    //var dieFaces: [DieFace] = [DieFace]()
 }
