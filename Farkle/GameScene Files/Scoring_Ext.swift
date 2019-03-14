@@ -11,7 +11,9 @@ import SpriteKit
 extension GameScene {
     
     func resetVariables() {
-        for face in dieFaces {
+        
+        print("reset variables")
+        for face in dieFacesArray {
             var currentFace = face
             currentFace.countThisRoll = 0
         }
@@ -27,10 +29,13 @@ extension GameScene {
     }
     
     func rollDice(isComplete: (Bool) -> Void) {
+        print("roll dice")
         currentScore = 0
-        currentDice = rollableDice
-        for die in rollableDice where !die.selected {
+
+        for die in currentDice {
+            //where !die.selected {
             animateDice(die: die, isComplete: handlerBlock)
+            die.previousPosition = die.position
         }
     }
     
@@ -46,22 +51,22 @@ extension GameScene {
     }
     
     func getNewDice() -> [Die] {
-        
-        for die in currentDice where !die.selected {
+        print("new dice")
+        for die in currentDice {
             let currentFace = Int(arc4random_uniform(6)+1)
-            die.currentFace = dieFaces[currentFace - 1]
+            die.currentFace = dieFacesArray[currentFace - 1]
             die.currentFace.countThisRoll += 1
-         
-            setDieImage(die: die)
+            //setDieImage(die: die)
         }
-        currentDice = [die1, die2, die3, die4, die5]
+        //currentDice = [die1, die2, die3, die4, die5]
         return currentDice
     }
     
     func tallyTheScore() {
+        print("tally score")
         if scoringCombo.threeOAK == true {
             currentPlayer.hasScoringDice = true
-            for die in rollableDice { //where die.currentFace.countThisRoll == 3 {
+            for die in rollableDice {
                 if die.selected {
                     if die.currentFace.countThisRoll == 3 {
                         currentScore += die.currentFace.points * 100
@@ -101,19 +106,16 @@ extension GameScene {
             currentScore += 500
         } else if scoringCombo.scoringDice == false {
             for die in rollableDice where die.currentFace.value == 1 || die.currentFace.value == 5 {
-                
-                var count = die.currentFace.countThisRoll
-                
+                                
                 if die.selected {
                     if die.currentFace.value == 1 {
                         currentPlayer.hasScoringDice = true
-                        currentScore += 100// * die.currentFace.countThisRoll
-                        count -= 1
+                        currentScore += 100
                     } else if die.currentFace.value == 5 {
                         if die.selected {
                             currentPlayer.hasScoringDice = true
-                            currentScore += 50// * die.currentFace.countThisRoll
-                            count -= 1
+                            currentScore += 50
+                            
                         }
                     }
                 }
@@ -127,6 +129,7 @@ extension GameScene {
     }
 
     func checkForAStraight(isComplete: (Bool) -> Void) {
+        print("check for straight")
         var dieFaces: [Int] = []
         for die in currentDice {
             dieFaces.append(die.currentFace.value)
@@ -140,6 +143,7 @@ extension GameScene {
     }
 
     func checkForThreeOfAKind(isComplete: (Bool) -> Void) {
+        print("check for 3oak")
         for die in currentDice where die.selected {
             let count = die.currentFace.countThisRoll
             

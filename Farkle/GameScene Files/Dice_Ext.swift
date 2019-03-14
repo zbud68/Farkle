@@ -157,7 +157,7 @@ extension GameScene {
         dieFace6.unSelectedTexture = GameConstants.Textures.Die6
         dieFace6.selectedTexture = GameConstants.Textures.Die6Selected
         
-        dieFaces = [dieFace1, dieFace2, dieFace3, dieFace4, dieFace5, dieFace6]
+        dieFacesArray = [dieFace1, dieFace2, dieFace3, dieFace4, dieFace5, dieFace6]
     }
     
     func setupPlaceHolderWindow() {
