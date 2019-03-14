@@ -12,12 +12,9 @@ extension GameScene {
     func getDice() {
         setupDice()
         setupDiePhysics()
-        positionDice()
+        positionDice(isComplete: handlerBlock)
         setupDieFaces()
         addDice()
-        
-        die1.texture = die1.currentFace.unSelectedTexture
-        //setDiceLocations()
     }
     
     func setDiceLocations() {
@@ -36,47 +33,61 @@ extension GameScene {
         die1.texture = die1.currentFace.unSelectedTexture
         die1.selected = false
         die1.position = die1_PlaceHolder.position
+        die1.zRotation = 0
+        die1.diePosition = die1_PlaceHolder.position
 
         die2.name = "Die 2"
         die2.currentFace = dieFace2
         die2.texture = die2.currentFace.unSelectedTexture
         die2.selected = false
         die2.position = die2_PlaceHolder.position
+        die2.zRotation = 0
+        die2.diePosition = die2_PlaceHolder.position
 
         die3.name = "Die 3"
         die3.currentFace = dieFace3
         die3.texture = die3.currentFace.unSelectedTexture
         die3.selected = false
         die3.position = die3_PlaceHolder.position
+        die3.zRotation = 0
+        die3.diePosition = die3_PlaceHolder.position
 
         die4.name = "Die 4"
         die4.currentFace = dieFace4
         die4.texture = die4.currentFace.unSelectedTexture
         die4.selected = false
         die4.position = die4_PlaceHolder.position
+        die4.zRotation = 0
+        die4.diePosition = die4_PlaceHolder.position
 
         die5.name = "Die 5"
         die5.currentFace = dieFace5
         die5.texture = die5.currentFace.unSelectedTexture
         die5.selected = false
         die5.position = die5_PlaceHolder.position
+        die5.zRotation = 0
+        die5.diePosition = die5_PlaceHolder.position
 
         die6.name = "Die 6"
         die6.currentFace = dieFace6
         die6.texture = die6.currentFace.unSelectedTexture
         die6.selected = false
         die6.position = die6_PlaceHolder.position
+        die6.zRotation = 0
+        die6.diePosition = die6_PlaceHolder.position
 
         diceArray = [die1, die2, die3, die4, die5]
         if currentGame.numDice == 6 {
             diceArray.append(die6)
         }
+        
+        currentDice = diceArray
+        rollableDice = currentDice
     }
     
     func setupDiePhysics() {
-        let currentDice = diceArray
         
-        for die in currentDice {
+        for die in diceArray {
             die.physicsBody = SKPhysicsBody(rectangleOf: GameConstants.Sizes.Dice)
             die.physicsBody?.affectedByGravity = false
             die.physicsBody?.isDynamic = true
@@ -90,14 +101,15 @@ extension GameScene {
         }
     }
     
-    func positionDice() {
-        let currentDice = diceArray
-        
-        for die in currentDice where !die.selected {
+    func positionDice(isComplete: (Bool) -> Void) {
+       // let wait = SKAction.wait(forDuration: 3)
+
+        for die in currentDice {
             die.zPosition = GameConstants.ZPositions.Dice
             die.zRotation = 0
             die.size = GameConstants.Sizes.Dice
-            
+            die.position = die.diePosition
+        /*
             switch die.name {
             case "Die 1":
                 die1.position = die1_PlaceHolder.position
@@ -113,14 +125,15 @@ extension GameScene {
                 die6.position = die6_PlaceHolder.position
             default:
                 break
-            }
+            }*/
         }
+      //  run(wait)
+        isComplete(true)
     }
     
     func addDice() {
-        let currentDice = diceArray
         
-        for die in currentDice {
+        for die in diceArray {
             placeHolderWindow.addChild(die)
         }
     }
@@ -161,13 +174,14 @@ extension GameScene {
     
     func setupPlaceHolderWindowPhysics() {
         
-        placeHolderWindow.physicsBody = SKPhysicsBody(rectangleOf: placeHolderWindow.size, center: CGPoint(x: placeHolderWindow.frame.midX, y: placeHolderWindow.frame.midY))
+        placeHolderWindow.physicsBody = SKPhysicsBody(texture: placeHolderWindow.texture!, size: placeHolderWindow.size)
+        //(rectangleOf: placeHolderWindow.size, center: CGPoint(x: placeHolderWindow.frame.midX, y: placeHolderWindow.frame.midY))
         placeHolderWindow.physicsBody?.isDynamic = false
         placeHolderWindow.physicsBody?.affectedByGravity = false
         placeHolderWindow.physicsBody?.allowsRotation = false
-        placeHolderWindow.physicsBody?.categoryBitMask = 3
-        placeHolderWindow.physicsBody?.collisionBitMask = 3
-        placeHolderWindow.physicsBody?.contactTestBitMask = 3
+        placeHolderWindow.physicsBody?.categoryBitMask = 0
+        placeHolderWindow.physicsBody?.collisionBitMask = 0
+        placeHolderWindow.physicsBody?.contactTestBitMask = 0
         
     }
     
@@ -203,6 +217,4 @@ extension GameScene {
             placeHolderLocations.append(placeHolder.position)
         }
     }
-    
-    
 }

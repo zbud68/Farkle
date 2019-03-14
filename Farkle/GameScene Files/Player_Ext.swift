@@ -90,14 +90,4 @@ extension GameScene {
             gameState = .NewRound
         }
     }
-    
-    func resetCurrentPlayer() {
-        let currentDice = diceArray
-        currentPlayer.currentRollScore = 0
-        currentPlayer.hasScoringDice = false
-        currentScore = 0
-        for die in currentDice {
-            die.selected = false
-        }
-    }
 }

@@ -28,12 +28,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     //MARK: ********** Player Variables **********
     
-    let player1: Player = Player.init(name: "Player 1", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false, farkle: false)
-    let player2: Player = Player.init(name: "Player 2", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false, farkle: false)
-    let player3: Player = Player.init(name: "Player 3", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false, farkle: false)
-    let player4: Player = Player.init(name: "Player 4", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false, farkle: false)
+    let player1: Player = Player.init(name: "Player 1", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false)
+    let player2: Player = Player.init(name: "Player 2", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false)
+    let player3: Player = Player.init(name: "Player 3", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false)
+    let player4: Player = Player.init(name: "Player 4", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false)
     
-    var currentPlayer: Player = Player(name: "Player 1", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false, farkle: false)
+    var currentPlayer: Player = Player(name: "Player 1", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false)
     var currentPlayerID: Int = 0
 
     var playersArray: [Player]!
@@ -138,8 +138,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let offsetY = CGFloat(48)
     var firstRoll = true
     
-    var currentDiceArray: [Die] = [Die]()
-       
+    var currentDice: [Die] = [Die]()
+    var rollableDice = [Die]()
+    
+    var currentDiePosition = CGPoint()
+    var previousDiePosition = CGPoint()
+    
     // MARK: ********** didMove Section **********
     override func didMove(to view: SKView) {
         var dieID = 0
@@ -157,7 +161,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         displaySettingsMenu(isComplete: handlerBlock)
         setupPlaceHolderWindow()
         setupDiePlaceHolders()
-
     }
     
     func displayGameTable(isComplete: (Bool) -> Void) {
@@ -245,6 +248,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case "Pause":
                 pauseIconTouched()
             case "RollDice":
+                currentDice = getNewDice()
                 rollDice(isComplete: handlerBlock)
             case "KeepScore":
                 keepScoreIconTouched()
@@ -255,51 +259,129 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func wasDiceTouched() {
-        let currentDice = diceArray
-        var currentRollScore = 0
+        for die in currentDice where die.selected {
+            die.physicsBody?.isDynamic = false
+        }
+        
+        //checkForAStraight(isComplete: handlerBlock)
+        //checkForThreeOfAKind(isComplete: handlerBlock)
+        
         for die in currentDice {
             if die.contains(placeHolderTouchLocation) {
-
-                if die.selected {
-                    die.selectable = false
-                } else {
-                    die.selected = true
-                    die.selectable = false
-                    die.texture = die.currentFace.selectedTexture
-                    currentRollScore = tallyTheScore(dice: currentDice, rollScore: currentRollScore)
-                }
-            }
-        }
-
-        /*
-            if die.contains(placeHolderTouchLocation) {
-                if die.selectable == true {
-                    if die.selected != true {
-                        die.selected = true
-                        selectedDice = currentDice.filter {$0.selected == true}
-                        currentDice = currentDice.filter {$0.selected == false}
-                        setDieImage(die: die)
-                    } /*else if die.selected == true {
-                        die.selected = false
-                        setDieImage(die: die)
-                    
-                    }*/
-                }
+                die.currentFace.countThisRoll += 1
+                selectedDice.append(die)
             }
         }
         
+        /*
+        for die in currentDice {// where !die.selected {
+            if die.contains(placeHolderTouchLocation) {
+                die.selected.toggle()
+                currentDiePosition = die.position
+                die.position = die.diePosition
+                die.zRotation = 0
+                setDieImage(die: die)
+                //die.texture = die.currentFace.selectedTexture
+                if die.selected {
+                    die.physicsBody?.isDynamic = false
+                } else {
+                    die.physicsBody?.isDynamic = true
+                }
+            }
+        }
+        currentPlayer.currentRollScore += currentScore
+        tallyTheScore()
+        resetVariables()
+
         */
-        selectedDice = currentDice.filter { $0.selected == true }
-        if selectedDice.count == currentGame.numDice {
-            for die in diceArray {
+    }
+
+ /*
+        for die in currentDice where !die.selected {
+            if die.selected {
                 die.selectable = false
+                die.physicsBody?.isDynamic = false
+            }
+            if die.contains(placeHolderTouchLocation) {
+                die.selected.toggle()
+                if die.selected {
+                    currentDiePosition = die.position
+                    die.position = die.diePosition
+                    die.zRotation = 0
+                    die.texture = die.currentFace.selectedTexture
+                    die.physicsBody?.isDynamic = false
+                } else {
+                    die.position = currentDiePosition
+                    die.texture = die.currentFace.unSelectedTexture
+                    die.physicsBody?.isDynamic = true
+                }
+            }
+        }
+        if firstRoll {
+            currentScore = 0
+            currentScore = currentPlayer.currentRollScore
+            firstRoll = false
+        } else {
+            checkForAStraight(isComplete: handlerBlock)
+            //tallyTheScore()
+        }
+        
+        if scoringCombo.straight == true {
+            var id = 0
+            for die in rollableDice {
+                die.selected = true
+                setDieImage(die: die)
+                id += 1
+            }
+
+ 
+            die1.position = die1_PlaceHolder.position
+            die2.position = die2_PlaceHolder.position
+            die3.position = die3_PlaceHolder.position
+            //startNewRoll()
+            currentScore += 1500
+            //currentPlayer.currentRollScore += currentScore
+        } else {
+            checkForThreeOfAKind(isComplete: handlerBlock)
+        }
+
+        currentPlayer.currentRollScore += currentScore
+
+        if selectedDice.count == currentGame.numDice {
+            for die in currentDice {
+                die.selectable = false
+            }
+            selectedDice.removeAll()
+            for die in currentDice {
+                die.selected = false
+                die.selectable = true
+                die.physicsBody?.isDynamic = true
             }
             startNewRoll()
         }
+        var id = 0
+        for die in rollableDice where die.selected {
+            selectedDice.append(die)
+            setDieImage(die: die)
+            id += 1
+        }
         
-        //currentRollScore = tallyTheScore(dice: currentDice)
-        currentScoreLabel.text = String(currentScore)
-        //whatchaGot(isComplete: handlerBlock)
+
+        currentScoreLabel.text = String(currentPlayer.currentRollScore)        
+    }
+ */
+    
+    func checkForNewRoll() {
+        if selectedDice.count >= currentGame.numDice {
+            selectedDice.removeAll()
+            for die in currentDice {
+                die.selected = false
+                die.selectable = true
+                die.physicsBody?.isDynamic = true
+            }
+            startNewRoll()
+        }
+
     }
     
     func setDieImage(die: Die) {
@@ -392,8 +474,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func nextPlayer() {
-        let currentDiceArray = diceArray
         firstRoll = true
+        setupDice()
         currentPlayer.nameLabel.fontColor = UIColor.lightGray
         currentPlayer.scoreLabel.fontColor = UIColor.lightGray
         
@@ -408,35 +490,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         currentPlayer = playersArray[currentPlayerID]
         currentPlayer.nameLabel.fontColor = GameConstants.Colors.PlayerNameLabelFont
         currentPlayer.scoreLabel.fontColor = GameConstants.Colors.PlayerScoreLabelFont
-        setupDice()
         selectedDice.removeAll()
         currentPlayer.currentRollScore = 0
         currentScore = 0
-        for die in currentDiceArray {
+        for die in rollableDice {
             die.physicsBody?.isDynamic = true
         }
     }
     
     func startNewRoll() {
-        let currentDiceArray = diceArray
         firstRoll = true
-        selectedDice.removeAll()
-        //currentPlayer.currentRollScore += currentScore
-        //positionDice()
+        currentDice = diceArray
+        rollableDice = currentDice
+        selectedDice.removeAll(keepingCapacity: true)
         resetVariables()
-        //currentScore = 0
-
-        for die in currentDiceArray {
-            die.selected = false
+        for die in currentDice {
+            //die.selected = false
             die.physicsBody?.isDynamic = true
-            setDieImage(die: die)
+            //setDieImage(die: die)
         }
+        //setupDice()
+        //positionDice(isComplete: handlerBlock)
+        currentScore = 0
     }
     
     func startNewRound() {
-        let currentDiceArray = diceArray
         firstRoll = true
-        currentPlayer.currentRollScore += currentScore
+        setupDice()
+//        currentPlayer.currentRollScore += currentScore
         currentPlayer.scoreLabel.text = String(currentPlayer.currentRollScore)
         currentPlayer.nameLabel.fontColor = UIColor.lightGray
         currentPlayer.scoreLabel.fontColor = UIColor.lightGray
@@ -444,12 +525,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for player in playersArray {
             player.currentRollScore = 0
         }
-        for die in currentDiceArray {
+        for die in rollableDice {
             die.physicsBody?.isDynamic = true
         }
         currentScore = 0
         currentGame.numRounds += 1
-        setupDice()
     }
     
     func showMainMenu() {
@@ -498,11 +578,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func farkle() {
+        print("Farkle")
+        for die in rollableDice {
+            print(die.currentFace.value)
+        }
+        print("next player")
         currentScore = 0
         currentPlayer.currentRollScore = 0
-        showMessage(msg: "Farkle", isComplete: handlerBlock)
-        resetCurrentPlayer()
+        currentPlayer.hasScoringDice = false
         nextPlayer()
+        //showMessage(msg: "Farkle", isComplete: handlerBlock)
+        
     }
     
     func showMessage(msg: String, isComplete: (Bool) -> Void) {

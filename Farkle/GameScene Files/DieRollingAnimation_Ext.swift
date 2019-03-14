@@ -22,21 +22,14 @@ extension GameScene {
         
         var rollAction = SKAction()
         
-        let Wait = SKAction.wait(forDuration: 0.75)
+        //let Wait = SKAction.wait(forDuration: 0.75)
         
         if let RollAction = SKAction(named: "RollDice") {
             rollAction = RollAction
         }
         
-        let FadeOut = SKAction.fadeAlpha(to:  0, duration: 0.75)
-        let FadeIn = SKAction.fadeAlpha(to: 1, duration: 0.75)
-        
-        
         let SetFace = SKAction.run {
             self.setDieImage(die: die)
-        }
-        let positionDice = SKAction.run {
-            self.positionDice()
         }
         
         let randomPosition = SKAction.run {
@@ -56,9 +49,24 @@ extension GameScene {
         }
         
         let Group = SKAction.group([moveAction, rollAction])
-        let seq = SKAction.sequence([getRandomPoints, randomPosition, Group, SetFace, Wait, FadeOut, positionDice, FadeIn])
+        let seq = SKAction.sequence([getRandomPoints, randomPosition, Group, SetFace])
+
         die.run(seq)
         isComplete(true)
     }
+    
+    /*
+    func moveSelectedDice(die: Die, isComplete: (Bool) -> Void) {
+        let FadeOut = SKAction.fadeAlpha(to:  0, duration: 0.75)
+        let FadeIn = SKAction.fadeAlpha(to: 1, duration: 0.75)
+        let positionDice = SKAction.run {
+            self.positionDice(isComplete: self.handlerBlock)
+        }
+
+        let selectedSeq = SKAction.sequence([FadeOut, positionDice, FadeIn])
+
+        isComplete(true)
+    }
+    */
 }
 
