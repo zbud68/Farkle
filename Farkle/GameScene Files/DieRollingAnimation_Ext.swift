@@ -29,7 +29,11 @@ extension GameScene {
         }
         
         let SetFace = SKAction.run {
-            self.setDieImage(die: die)
+            if die.selected {
+                die.texture = die.currentFace.selectedTexture
+            } else {
+                die.texture = die.currentFace.unSelectedTexture
+            }
         }
         
         let randomPosition = SKAction.run {

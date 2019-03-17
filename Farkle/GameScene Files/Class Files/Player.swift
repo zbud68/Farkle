@@ -20,8 +20,9 @@ class Player {
     var isSelectingDice: Bool
     var lastRoll: Bool
     var finished: Bool
+    var farkle: Bool
 
-    init(name: String, score: Int, currentRollScore: Int, hasScoringDice: Bool, isRolling: Bool, isSelectingDice: Bool, lastRoll: Bool, finished: Bool)
+    init(name: String, score: Int, currentRollScore: Int, hasScoringDice: Bool, isRolling: Bool, isSelectingDice: Bool, lastRoll: Bool, finished: Bool, farkle: Bool)
     {
         self.name = name
         self.score = score
@@ -31,6 +32,7 @@ class Player {
         self.isSelectingDice = isSelectingDice
         self.lastRoll = lastRoll
         self.finished = finished
+        self.farkle = farkle
 
     }
 }

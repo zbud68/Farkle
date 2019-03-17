@@ -10,7 +10,6 @@ import SpriteKit
 extension GameScene {
         
     func setupGameTable(isComplete: (Bool) -> Void) {
-        
         gameTable = SKSpriteNode(imageNamed: "WindowPopup")
         gameTable.name = "Game Table"
         gameTable.zPosition = GameConstants.ZPositions.GameTable
@@ -37,7 +36,7 @@ extension GameScene {
         logo.fontName = GameConstants.StringConstants.FontName
         logo.fontColor = GameConstants.Colors.LogoFont
         logo.fontSize = GameConstants.Sizes.Logo1Font
-        logo.alpha = 0.65
+        logo.alpha = 0
         logo.position = CGPoint(x: 0, y: -50)
         logo.zPosition = GameConstants.ZPositions.Logo
         logo.zRotation = 0
@@ -45,7 +44,7 @@ extension GameScene {
         logo2.fontName = GameConstants.StringConstants.FontName
         logo2.fontColor = GameConstants.Colors.LogoFont
         logo2.fontSize = GameConstants.Sizes.Logo2Font
-        logo2.alpha = 0.65
+        logo2.alpha = 0
         logo2.zRotation = 75
         
         logo2.zPosition = GameConstants.ZPositions.Logo
@@ -58,23 +57,28 @@ extension GameScene {
         
         currentScoreLabel.name = "CurrentScoreLabel"
         currentScoreLabel.zPosition = gameTable.zPosition + 0.5
-        //currentScoreLabel.text = "\(currentPlayer.name) score this roll: \(currentPlayer.currentRollScore)"
         currentScoreLabel.fontName = GameConstants.StringConstants.FontName
         currentScoreLabel.fontColor = GameConstants.Colors.LogoFont
         currentScoreLabel.fontSize = 24
-        currentScoreLabel.alpha = 1
+        currentScoreLabel.alpha = 0
         currentScoreLabel.zRotation = 0
         currentScoreLabel.position = CGPoint(x: 0, y: gameTable.frame.maxY - (gameTable.size.height / 4))
         isComplete(true)
     }
     
-    func fadeScoreLabel(isComplete: (Bool) -> Void) {
+    func fadeInLabels(isComplete: (Bool) -> Void) {
         //GameTable.addChild(currentScoreLabel)
-        let wait = SKAction.wait(forDuration: 0.5)
-        let fadeToAlpha = SKAction.fadeAlpha(to: 0.65, duration: 0.75)
+        let wait = SKAction.wait(forDuration: 0.25)
+        let fadeToAlpha = SKAction.fadeAlpha(to: 0.65, duration: 1.5)
         let labelSeq = SKAction.sequence([wait, fadeToAlpha])
 
-        currentScoreLabel.run(labelSeq)
+        let fadeLabels = SKAction.run {
+            self.currentScoreLabel.run(labelSeq)
+            self.logo.run(labelSeq)
+            self.logo2.run(labelSeq)
+        }
+        
+        gameTable.run(fadeLabels)
 
         isComplete(true)
     }

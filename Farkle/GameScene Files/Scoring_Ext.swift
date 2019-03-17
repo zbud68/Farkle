@@ -13,10 +13,19 @@ extension GameScene {
     func resetVariables() {
         
         print("reset variables")
-        for face in dieFacesArray {
-            var currentFace = face
-            currentFace.countThisRoll = 0
+        for dieFace in dieFacesArray {
+            dieFacesArray[dieFace.value - 1].countThisRoll = 0
         }
+        for player in playersArray {
+            player.currentRollScore = 0
+            player.farkle = false
+            player.finished = false
+            player.hasScoringDice = false
+            player.isRolling = false
+            player.isSelectingDice = false
+            player.lastRoll = false
+        }
+        
         scoringCombo.scoringDice = false
         scoringCombo.pairs = 0
         scoringCombo.threeOAK = false
@@ -28,14 +37,51 @@ extension GameScene {
         scoringCombo.sixOAK = false
     }
     
+    func getNewDice() -> [Die] {
+        print("new dice")
+        
+        for die in currentDice where !die.selected {
+            currentDie = die
+            //die.currentFace.countThisRoll = 0
+            let currentFace = Int(arc4random_uniform(6)+1)
+            var faceCount = dieFacesArray[currentFace - 1].countThisRoll
+            let currentDieFace = dieFacesArray[currentFace - 1]
+            
+            currentDie.currentFace = currentDieFace
+            faceCount += 1
+        }
+        
+        for dieFace in dieFacesArray { //where !die.selected {
+            print("dieCount \(dieFacesArray[dieFace.value - 1].countThisRoll)")
+        }
+        return currentDice
+    }
+    
     func rollDice(isComplete: (Bool) -> Void) {
+        for dieFace in dieFacesArray {
+            var face = dieFace
+            face.countThisRoll = 0
+        }
+        
+        for die in currentDice {
+            currentDie = die
+            if currentDie.selected {
+                selectedDice.append(currentDie)
+                currentDie.selectable = false
+            }
+        }
+        currentDice = getNewDice()
+
         print("roll dice")
         currentScore = 0
-
-        for die in currentDice {
-            //where !die.selected {
-            animateDice(die: die, isComplete: handlerBlock)
-            die.previousPosition = die.position
+        
+        for die in currentDice where !die.selected {
+            currentDie = die
+            animateDice(die: currentDie, isComplete: handlerBlock)
+        }
+        
+        if !firstRoll {
+            tallyTheScore()
         }
     }
     
@@ -46,52 +92,43 @@ extension GameScene {
         } else {
             currentPlayer.hasScoringDice = false
         }
-        
         isComplete(true)
-    }
-    
-    func getNewDice() -> [Die] {
-        print("new dice")
-        for die in currentDice {
-            let currentFace = Int(arc4random_uniform(6)+1)
-            die.currentFace = dieFacesArray[currentFace - 1]
-            die.currentFace.countThisRoll += 1
-            //setDieImage(die: die)
-        }
-        //currentDice = [die1, die2, die3, die4, die5]
-        return currentDice
     }
     
     func tallyTheScore() {
         print("tally score")
         if scoringCombo.threeOAK == true {
             currentPlayer.hasScoringDice = true
-            for die in rollableDice {
-                if die.selected {
-                    if die.currentFace.countThisRoll == 3 {
-                        currentScore += die.currentFace.points * 100
+            for die in currentDice {
+                currentDie = die
+                if currentDie.selected {
+                    if dieFacesArray[die.currentFace.value - 1].countThisRoll == 3 {
+                        currentScore += currentDie.currentFace.points * 100
                     }
                 }
             }
         } else if scoringCombo.fourOAK == true {
             currentPlayer.hasScoringDice = true
-            for die in rollableDice where die.currentFace.countThisRoll == 4 {
-                if die.selected {
-                    currentScore += (die.currentFace.points * 100) * 2
+            for die in currentDice where dieFacesArray[die.currentFace.value - 1].countThisRoll == 4 {
+                currentDie = die
+                if currentDie.selected {
+                    currentScore += (currentDie.currentFace.points * 100) * 2
                 }
             }
         } else if scoringCombo.fiveOAK == true {
             currentPlayer.hasScoringDice = true
-           for die in rollableDice where die.currentFace.countThisRoll == 5 {
-                if die.selected {
-                    currentScore += (die.currentFace.points * 100) * 3
+           for die in currentDice where     dieFacesArray[die.currentFace.value - 1].countThisRoll == 5     {
+                currentDie = die
+                if currentDie.selected {
+                    currentScore += (currentDie.currentFace.points * 100) * 3
                 }
             }
         } else if scoringCombo.sixOAK == true {
             currentPlayer.hasScoringDice = true
-           for die in rollableDice where die.currentFace.countThisRoll == 6 {
-                if die.selected {
-                    currentScore += (die.currentFace.points * 100) * 4
+           for die in currentDice where dieFacesArray[die.currentFace.value - 1].countThisRoll == 6 {
+                currentDie = die
+                if currentDie.selected {
+                    currentScore += (currentDie.currentFace.points * 100) * 4
                 }
             }
         } else if scoringCombo.straight == true {
@@ -105,24 +142,24 @@ extension GameScene {
             currentPlayer.hasScoringDice = true
             currentScore += 500
         } else if scoringCombo.scoringDice == false {
-            for die in rollableDice where die.currentFace.value == 1 || die.currentFace.value == 5 {
+            for die in currentDice where die.currentFace.value == 1 || die.currentFace.value == 5 {
+                currentDie = die
                                 
-                if die.selected {
-                    if die.currentFace.value == 1 {
+                if currentDie.selected {
+                    if currentDie.currentFace.value == 1 {
                         currentPlayer.hasScoringDice = true
                         currentScore += 100
-                    } else if die.currentFace.value == 5 {
-                        if die.selected {
+                    } else if currentDie.currentFace.value == 5 {
+                        if currentDie.selected {
                             currentPlayer.hasScoringDice = true
                             currentScore += 50
-                            
                         }
                     }
                 }
             }
         }
         
-        checkForFarkle(dice: rollableDice, isComplete: handlerBlock)
+        checkForFarkle(dice: currentDice, isComplete: handlerBlock)
         if currentPlayer.hasScoringDice == false {
             farkle()
         }
@@ -132,7 +169,8 @@ extension GameScene {
         print("check for straight")
         var dieFaces: [Int] = []
         for die in currentDice {
-            dieFaces.append(die.currentFace.value)
+            currentDie = die
+            dieFaces.append(currentDie.currentFace.value)
         }
         dieFaces = dieFaces.sorted()
         
@@ -145,7 +183,9 @@ extension GameScene {
     func checkForThreeOfAKind(isComplete: (Bool) -> Void) {
         print("check for 3oak")
         for die in currentDice where die.selected {
-            let count = die.currentFace.countThisRoll
+            currentDie = die
+            let count = dieFacesArray[die.currentFace.value - 1].countThisRoll
+            currentDie = die
             
             switch count {
             case 6:

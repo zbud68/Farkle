@@ -20,8 +20,6 @@
 		4D7BD9E322110B02005D6D78 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4D7BD9E222110B02005D6D78 /* GameScene.sks */; };
 		4D9394ED2216A99D00E12EFC /* Player_Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9394EC2216A99D00E12EFC /* Player_Ext.swift */; };
 		4D96D5912234F81B00FBCED1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D96D5902234F81B00FBCED1 /* Assets.xcassets */; };
-		4DA32B3A2235F450003FC27E /* DieFaces_copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA32B392235F450003FC27E /* DieFaces_copy.swift */; };
-		4DA32B3C2235F45D003FC27E /* Die_copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA32B3B2235F45D003FC27E /* Die_copy.swift */; };
 		4DA3FF62220A9EFB008B7BC4 /* GameConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA3FF61220A9EFB008B7BC4 /* GameConstants.swift */; };
 		4DA971772215E2E500CEB115 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA971762215E2E500CEB115 /* Game.swift */; };
 		4DBF23AC2229F7BC0093ED82 /* Scoring_Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DBF23AB2229F7BC0093ED82 /* Scoring_Ext.swift */; };
@@ -49,9 +47,7 @@
 		4D655748222B9E5E00565237 /* DieRollingAnimation_Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DieRollingAnimation_Ext.swift; sourceTree = "<group>"; };
 		4D7BD9E222110B02005D6D78 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		4D9394EC2216A99D00E12EFC /* Player_Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player_Ext.swift; sourceTree = "<group>"; };
-		4D96D5902234F81B00FBCED1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "../../Desktop - Mark’s MacBook Pro/iOS Development/Current Projects/Farkle/Farkle/Assets.xcassets"; sourceTree = "<group>"; };
-		4DA32B392235F450003FC27E /* DieFaces_copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DieFaces_copy.swift; sourceTree = "<group>"; };
-		4DA32B3B2235F45D003FC27E /* Die_copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Die_copy.swift; sourceTree = "<group>"; };
+		4D96D5902234F81B00FBCED1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "../../../Library/Mobile Documents/com~apple~CloudDocs/Desktop - Mark’s MacBook Pro/iOS Development/Current Projects/Farkle/Farkle/Assets.xcassets"; sourceTree = "<group>"; };
 		4DA3FF61220A9EFB008B7BC4 /* GameConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameConstants.swift; sourceTree = "<group>"; };
 		4DA971762215E2E500CEB115 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		4DBF23AB2229F7BC0093ED82 /* Scoring_Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scoring_Ext.swift; sourceTree = "<group>"; };
@@ -79,11 +75,9 @@
 			isa = PBXGroup;
 			children = (
 				4D10179E2213C4730060FBA2 /* DieFace.swift */,
-				4DA32B392235F450003FC27E /* DieFaces_copy.swift */,
 				4D10179A2213A9170060FBA2 /* Player.swift */,
 				4DA971762215E2E500CEB115 /* Game.swift */,
 				4DFDFC6B222063D000439E67 /* Die.swift */,
-				4DA32B3B2235F45D003FC27E /* Die_copy.swift */,
 			);
 			path = "Class Files";
 			sourceTree = "<group>";
@@ -259,9 +253,7 @@
 				4DFDFC6C222063D000439E67 /* Die.swift in Sources */,
 				4DE4A2312211D82800671D07 /* GameTable_Ext.swift in Sources */,
 				4DA971772215E2E500CEB115 /* Game.swift in Sources */,
-				4DA32B3C2235F45D003FC27E /* Die_copy.swift in Sources */,
 				4D374D1F221E104A00834241 /* Menus_Ext.swift in Sources */,
-				4DA32B3A2235F450003FC27E /* DieFaces_copy.swift in Sources */,
 				4D6396A7220165CB004B6718 /* GameViewController.swift in Sources */,
 				4DE4A2362211D8EA00671D07 /* Icon_Ext.swift in Sources */,
 				4D63969F220165CB004B6718 /* AppDelegate.swift in Sources */,

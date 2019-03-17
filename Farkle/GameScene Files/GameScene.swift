@@ -28,12 +28,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     //MARK: ********** Player Variables **********
     
-    let player1: Player = Player.init(name: "Player 1", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false)
-    let player2: Player = Player.init(name: "Player 2", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false)
-    let player3: Player = Player.init(name: "Player 3", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false)
-    let player4: Player = Player.init(name: "Player 4", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false)
+    let player1: Player = Player.init(name: "Player 1", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false, farkle: false)
+    let player2: Player = Player.init(name: "Player 2", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false, farkle: false)
+    let player3: Player = Player.init(name: "Player 3", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false, farkle: false)
+    let player4: Player = Player.init(name: "Player 4", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false, farkle: false)
     
-    var currentPlayer: Player = Player(name: "Player 1", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false)
+    var currentPlayer: Player = Player(name: "Player 1", score: 0, currentRollScore: 0, hasScoringDice: false, isRolling: false, isSelectingDice: false, lastRoll: false, finished: false, farkle: false)
     var currentPlayerID: Int = 0
 
     var playersArray: [Player]!
@@ -53,11 +53,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var die4: Die = Die()
     var die5: Die = Die()
     var die6: Die = Die()
+    var currentDie: Die = Die()
 
     var diceArray: [Die] = [Die]()
     var selectedDice: [Die] = [Die]()
     var dieFacesArray: [DieFace] = [DieFace]()
     var dieFaces: [Int] = [Int]()
+    var currentDice: [Die] = [Die]()
+    var rollableDice = [Die]()
 
     var currentGame: Game = Game()
     var currentScore: Int = 0
@@ -101,8 +104,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var settingsMenuIconsArray = [SKSpriteNode]()
     var iconWindowIconsArray = [SKSpriteNode]()
 
-    let logo = SKLabelNode(text: "Farkle")
-    let logo2 = SKLabelNode(text: "Plus")
+    let logo = SKLabelNode(text: "Moe's")
+    let logo2 = SKLabelNode(text: "Place")
 
     //MARK: ********** Touches Variables **********
     var touchLocation: CGPoint = CGPoint(x: 0, y: 0)
@@ -137,9 +140,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var die6_PlaceHolder = SKSpriteNode()
     let offsetY = CGFloat(48)
     var firstRoll = true
-    
-    var currentDice: [Die] = [Die]()
-    var rollableDice = [Die]()
+    var firstGame = true
     
     var currentDiePosition = CGPoint()
     var previousDiePosition = CGPoint()
@@ -161,11 +162,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         displaySettingsMenu(isComplete: handlerBlock)
         setupPlaceHolderWindow()
         setupDiePlaceHolders()
+        setupPlayers()
     }
     
     func displayGameTable(isComplete: (Bool) -> Void) {
         backGround.addChild(gameTable)
         gameTable.addChild(logo)
+        logo2.zRotation = 269.5
         logo.addChild(logo2)
         
         isComplete(true)
@@ -198,20 +201,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
-            iconWindowTouchLocation = touch.location(in: iconWindow)
-            mainMenuTouchLocation = touch.location(in: mainMenu)
-            settingsMenuTouchLocation = touch.location(in: settingsMenu)
-            gameTableTouchLocation = touch.location(in: gameTable)
-            placeHolderTouchLocation = touch.location(in: placeHolderWindow)
+            touchLocation = touch.location(in: self)
+            handleTouch(touch: touches.first!)
         }
-        wasMainMenuIconTouched()
-        wasSettingsMenuIconTouched()
-        wasIconWindowIconTouched()
-        wasDiceTouched()
+        
     }
     
-    func wasMainMenuIconTouched() {
-        for icon in mainMenuIconsArray where icon.contains(mainMenuTouchLocation) {
+    func wasMainMenuIconTouched(icon: SKSpriteNode) {
+//        for icon in mainMenuIconsArray where icon.contains(mainMenuTouchLocation) {
             switch icon.name {
             case "New Game":
                 newGameIconTouched()
@@ -226,11 +223,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             default:
                 break
             }
-        }
+//        }
     }
     
-    func wasSettingsMenuIconTouched() {
-        for icon in settingsMenuIconsArray where icon.contains(settingsMenuTouchLocation) {
+    func wasSettingsMenuIconTouched(icon: SKSpriteNode) {
+//        for icon in settingsMenuIconsArray where icon.contains(settingsMenuTouchLocation) {
             switch icon.name {
             case "Sound":
                 soundIconTouched()
@@ -239,108 +236,113 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             default:
                 break
             }
-        }
+//        }
     }
     
-    func wasIconWindowIconTouched() {
-        for icon in iconWindowIconsArray where icon.contains(iconWindowTouchLocation) {
+    func wasIconWindowIconTouched(icon: SKSpriteNode) {
+//        for icon in iconWindowIconsArray where icon.contains(iconWindowTouchLocation) {
             switch icon.name {
             case "Pause":
                 pauseIconTouched()
             case "RollDice":
-                currentDice = getNewDice()
+                //currentDice = getNewDice()
                 rollDice(isComplete: handlerBlock)
             case "KeepScore":
                 keepScoreIconTouched()
             default:
                 break
             }
-        }
+//        }
     }
     
-    func wasDiceTouched() {
-        touches: do {
-            for die in currentDice where die.selected {
-                die.physicsBody?.isDynamic = false
-                die.selectable = false
-            }
-            
-            //checkForAStraight(isComplete: handlerBlock)
-            //checkForThreeOfAKind(isComplete: handlerBlock)
-            
-            for die in currentDice {
-                if die.contains(placeHolderTouchLocation) {
-                    if die.selected {
-                        die.selected = false
-                        die.texture = die.currentFace.unSelectedTexture
-                        die.position = die.previousPosition
-                        die.zRotation = 0
-                        if die.currentFace.countThisRoll != 0 {
-                            die.currentFace.countThisRoll -= 1
-                        }
-                    } else if !die.selected {
-                        die.selected = true
-                        selectedDice.append(die)
-                        die.texture = die.currentFace.selectedTexture
-                        die.position = die.diePosition
-                        die.zRotation = 0
-                        die.currentFace.countThisRoll += 1
+    func wasDiceTouched(die: Die) {
+        //print("Entering Game Loop")
+        if die.contains(placeHolderTouchLocation) {
+            if die.selectable {
+                if die.selected {
+                    die.selected = false
+                    die.texture = die.currentFace.unSelectedTexture
+                    die.position = die.previousPosition
+                    die.zRotation = 0
+                    if dieFacesArray[die.currentFace.value - 1].countThisRoll != 0 {
+                        dieFacesArray[die.currentFace.value - 1].countThisRoll -= 1
                     }
-                }
-                dieFaces.append(die.currentFace.value)
-            }
-            
-            dieFaces = dieFaces.sorted()
-            
-            if dieFaces == scoringCombo.lowStraight || dieFaces == scoringCombo.highStraight || dieFaces == scoringCombo.sixDieStraight {
-                scoringCombo.straight = true
-                for die in currentDice {
-                    die.selected = true
+                } else if !die.selected {                                                                                           die.selected = true
+                    die.texture = die.currentFace.selectedTexture
                     die.position = die.diePosition
                     die.zRotation = 0
-                    die.currentFace.countThisRoll = 0
-                }
-                currentPlayer.currentRollScore += currentScore
-                break touches
-            }
-
-            
-            for die in selectedDice where die.currentFace.countThisRoll >= 2 {
-                switch die.currentFace.countThisRoll {
-                case 2:
-                    scoringCombo.pairs += 1
-                case 3:
-                    scoringCombo.threeOAK = true
-                case 4:
-                    scoringCombo.fourOAK = true
-                case 5:
-                    scoringCombo.fiveOAK = true
-                case 6:
-                    scoringCombo.sixOAK = true
-                default:
-                    break
+                    dieFacesArray[die.currentFace.value - 1].countThisRoll += 1
                 }
             }
-            
-            if scoringCombo.pairs == 1 && scoringCombo.threeOAK == true {
-                scoringCombo.pairs -= 1
-                scoringCombo.threeOAK = false
-                scoringCombo.fullHouse = true
-                break touches
-            }
-            
-            for die in selectedDice where die.currentFace.countThisRoll == 1 {
-                if die.currentFace.value == 1 {
-                    currentScore += 100
-                    die.currentFace.countThisRoll -= 1
-                } else if die.currentFace.value == 5 {
-                    currentScore += 50
-                    die.currentFace.countThisRoll -= 1
-                }
-            }
+        dieFaces.append(die.currentFace.value)
         }
+        dieFaces = dieFaces.sorted()
+        
+        if dieFaces == scoringCombo.lowStraight || dieFaces == scoringCombo.highStraight || dieFaces == scoringCombo.sixDieStraight {
+            scoringCombo.straight = true
+            /*
+            for die in currentDice {
+                die.selected = true
+                die.position = die.diePosition
+                die.zRotation = 0
+                die.currentFace.countThisRoll = 0
+            
+            }
+            */
+            print("straight")
+            //currentPlayer.currentRollScore += currentScore
+        }
+        
+        
+        //for die in currentDice {//where die.currentFace.countThisRoll >= 3 {
+            
+            
+            switch dieFacesArray[die.currentFace.value - 1].countThisRoll {
+            //case 2:
+                //scoringCombo.pairs += 1
+                //print("pair of \(die.currentFace.value)'s")
+            case 3:
+                scoringCombo.threeOAK = true
+                print("3oak")
+            case 4:
+                scoringCombo.fourOAK = true
+                print("4oak")
+           case 5:
+                scoringCombo.fiveOAK = true
+                print("5oak")
+            case 6:
+                scoringCombo.sixOAK = true
+                print("6oak")
+            default:
+                break
+            }
+        //}
+        
+        
+        if scoringCombo.pairs == 1 && scoringCombo.threeOAK == true {
+            scoringCombo.pairs -= 1
+            scoringCombo.threeOAK = false
+            scoringCombo.fullHouse = true
+            print("full house")
+        }
+        
+        //for die in currentDice where die.currentFace.countThisRoll == 1 {
+            if die.currentFace.value == 1 {
+                currentScore += 100
+                //dieFacesArray[die.currentFace.value - 1].countThisRoll -= 1
+                print("a one")
+            } else if die.currentFace.value == 5 {
+                currentScore += 50
+                //dieFacesArray[die.currentFace.value - 1].countThisRoll -= 1
+                print("a fifty")
+            }
+            checkForFarkle(dice: currentDice, isComplete: handlerBlock)
+        //}
+        //print("Game Loop Broke")
     }
     
+
+    /*
     func checkForNewRoll() {
         if selectedDice.count >= currentGame.numDice {
             selectedDice.removeAll()
@@ -351,8 +353,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             startNewRoll()
         }
+        firstRoll = false
 
     }
+    */
     
     func setDieImage(die: Die) {
         if die.selected == true {
@@ -365,30 +369,64 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func newGameIconTouched() {
-        /*
-        if gameState == .InProgress {
-            //displayGameInProgressWarning()
-        } else {
-        */
-            showIconWindowIcons()
+        showIconWindowIcons()
+        if firstGame {
             gameTable.addChild(currentScoreLabel)
-            fadeScoreLabel(isComplete: handlerBlock)
-            setupNewGame()
-        //}
+            fadeInLabels(isComplete: handlerBlock)
+            getDice()
+            addDice()
+        }
+        firstGame = false
+        setupNewGame()
     }
     
     func setupNewGame() {
-        print("new game")
+        firstRoll = true
         getCurrentGameSettings()
-        setupPlayers()
         currentPlayer = playersArray.first!
         currentPlayerID = 0
         currentPlayer.nameLabel.fontColor = GameConstants.Colors.PlayerNameLabelFont
         currentPlayer.scoreLabel.fontColor = GameConstants.Colors.PlayerScoreLabelFont
-        getDice()
-        setupDice()
+        resetVariables()
+        currentGame.numRounds = 0
+
     }
     
+    func handleTouch(touch: UITouch) {
+        var iconWindowIcon = SKSpriteNode()
+        var mainWindowIcon = SKSpriteNode()
+        var settingsWindowIcon = SKSpriteNode()
+
+        let touch = touch
+
+        iconWindowTouchLocation = touch.location(in: iconWindow)
+        mainMenuTouchLocation = touch.location(in: mainMenu)
+        settingsMenuTouchLocation = touch.location(in: settingsMenu)
+        gameTableTouchLocation = touch.location(in: gameTable)
+        placeHolderTouchLocation = touch.location(in: placeHolderWindow)
+        
+        for icon in mainMenuIconsArray where icon.contains(mainMenuTouchLocation) {
+            mainWindowIcon = icon
+            wasMainMenuIconTouched(icon: mainWindowIcon)
+        }
+        
+        for icon in iconWindowIconsArray where icon.contains(iconWindowTouchLocation){
+            iconWindowIcon = icon
+            wasIconWindowIconTouched(icon: iconWindowIcon)
+        }
+        
+        for icon in settingsMenuIconsArray where icon.contains(settingsMenuTouchLocation) {
+            
+            settingsWindowIcon = icon
+            wasSettingsMenuIconTouched(icon: settingsWindowIcon)
+        }
+
+        for die in currentDice {
+            currentDie = die
+            wasDiceTouched(die: currentDie)
+        }
+    }
+
     func getCurrentGameSettings() {
         currentGame = Game()
     }
@@ -437,14 +475,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func keepScoreIconTouched() {
-        currentPlayer.score += currentScore
-        currentPlayer.scoreLabel.text = String(currentPlayer.score)
-        currentPlayer.currentRollScore = 0
-        currentScore = 0
         nextPlayer()
     }
     
     func nextPlayer() {
+        currentPlayer.score += currentScore
+        currentPlayer.scoreLabel.text = String(currentPlayer.score)
+        currentPlayer.currentRollScore = 0
+        currentScore = 0
+
         print("next player")
         firstRoll = true
         setupDice()
@@ -458,15 +497,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             currentPlayerID = 0
             startNewRound()
         }
-
+        
+        //currentPlayer = player1
         currentPlayer = playersArray[currentPlayerID]
         currentPlayer.nameLabel.fontColor = GameConstants.Colors.PlayerNameLabelFont
         currentPlayer.scoreLabel.fontColor = GameConstants.Colors.PlayerScoreLabelFont
         selectedDice.removeAll()
-        currentPlayer.currentRollScore = 0
-        currentScore = 0
-        for die in rollableDice {
-            die.physicsBody?.isDynamic = true
+        for die in currentDice {
+            currentDie = die
+            if currentDie.selectable {
+                currentDie.physicsBody?.isDynamic = true
+            }
+            currentDie.selectable = true
         }
     }
     
@@ -474,16 +516,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("new roll")
         firstRoll = true
         currentDice = diceArray
-        rollableDice = currentDice
+        //rollableDice = currentDice
         selectedDice.removeAll(keepingCapacity: true)
         resetVariables()
         for die in currentDice {
+            currentDie = die
             //die.selected = false
-            die.physicsBody?.isDynamic = true
+            currentDie.physicsBody?.isDynamic = true
             //setDieImage(die: die)
         }
-        //setupDice()
-        //positionDice(isComplete: handlerBlock)
+        setupDice()
+        positionDice(isComplete: handlerBlock)
         currentScore = 0
     }
     
@@ -499,8 +542,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for player in playersArray {
             player.currentRollScore = 0
         }
-        for die in rollableDice {
-            die.physicsBody?.isDynamic = true
+        for die in currentDice where die.selectable {
+            currentDie = die
+            currentDie.physicsBody?.isDynamic = true
         }
         currentScore = 0
         currentGame.numRounds += 1
@@ -553,8 +597,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func farkle() {
         print("Farkle")
-        for die in rollableDice {
-            print(die.currentFace.value)
+        for die in currentDice where die.selectable {
+            print(currentDie.currentFace.value)
         }
         print("next player")
         currentScore = 0

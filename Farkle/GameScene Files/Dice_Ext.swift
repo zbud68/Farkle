@@ -10,11 +10,11 @@ import SpriteKit
 extension GameScene {
     
     func getDice() {
+        setupDieFaces()
         setupDice()
         setupDiePhysics()
         positionDice(isComplete: handlerBlock)
-        setupDieFaces()
-        addDice()
+        
     }
     
     func setDiceLocations() {
@@ -82,7 +82,7 @@ extension GameScene {
         }
         
         currentDice = diceArray
-        rollableDice = currentDice
+        //rollableDice = currentDice
     }
     
     func setupDiePhysics() {
@@ -102,39 +102,20 @@ extension GameScene {
     }
     
     func positionDice(isComplete: (Bool) -> Void) {
-       // let wait = SKAction.wait(forDuration: 3)
-
         for die in currentDice {
-            die.zPosition = GameConstants.ZPositions.Dice
-            die.zRotation = 0
-            die.size = GameConstants.Sizes.Dice
-            die.position = die.diePosition
-        /*
-            switch die.name {
-            case "Die 1":
-                die1.position = die1_PlaceHolder.position
-            case "Die 2":
-                die2.position = die2_PlaceHolder.position
-            case "Die 3":
-                die3.position = die3_PlaceHolder.position
-            case "Die 4":
-                die4.position = die4_PlaceHolder.position
-            case "Die 5":
-                die5.position = die5_PlaceHolder.position
-            case "Die 6":
-                die6.position = die6_PlaceHolder.position
-            default:
-                break
-            }*/
+            currentDie = die
+            currentDie.zPosition = GameConstants.ZPositions.Dice
+            currentDie.zRotation = 0
+            currentDie.size = GameConstants.Sizes.Dice
+            currentDie.position = currentDie.diePosition
         }
-      //  run(wait)
         isComplete(true)
     }
     
     func addDice() {
-        
-        for die in diceArray {
-            placeHolderWindow.addChild(die)
+        for die in currentDice {
+            currentDie = die
+            placeHolderWindow.addChild(currentDie)
         }
     }
     
